@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { DEFAULT_AUTH_REDIRECT_PATH, getSafeRedirectPath } from '@/lib/auth/redirect'
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -41,24 +42,24 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims()
 
   const user = data?.claims
+  const pathname = request.nextUrl.pathname
+  const isProtectedRoute = pathname === '/protected' || pathname.startsWith('/protected/')
+  const isAuthRoute = pathname === '/auth' || pathname.startsWith('/auth/')
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/signin') &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/rpc') &&
-    request.nextUrl.pathname !== '/'
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
+    url.search = ''
+    url.searchParams.set('next', `${pathname}${request.nextUrl.search}`)
     return NextResponse.redirect(url)
   }
 
-  if (user && (request.nextUrl.pathname === ('/auth/login') || request.nextUrl.pathname === ('/auth/sign-up'))) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/protected'
-    return NextResponse.redirect(url)
+  if (user && isAuthRoute) {
+    const next = getSafeRedirectPath(
+      request.nextUrl.searchParams.get('next'),
+      DEFAULT_AUTH_REDIRECT_PATH
+    )
+    return NextResponse.redirect(new URL(next, request.url))
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

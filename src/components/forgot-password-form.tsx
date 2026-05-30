@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { getSafeRedirectPath } from '@/lib/auth/redirect'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -16,11 +17,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 
-export function ForgotPasswordForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+type ForgotPasswordFormProps = React.ComponentPropsWithoutRef<'div'> & {
+  next?: string | null
+}
+
+export function ForgotPasswordForm({ className, next, ...props }: ForgotPasswordFormProps) {
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const redirectTo = getSafeRedirectPath(next)
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,7 +37,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
     try {
       // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`,
+        redirectTo: `${window.location.origin}/auth/update-password?next=${encodeURIComponent(redirectTo)}`,
       })
       if (error) throw error
       setSuccess(true)
@@ -86,7 +92,10 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
               </div>
               <div className="mt-4 text-center text-sm">
                 Already have an account?{' '}
-                <Link href="/auth/login" className="underline underline-offset-4">
+                <Link
+                  href={`/auth/login?next=${encodeURIComponent(redirectTo)}`}
+                  className="underline underline-offset-4"
+                >
                   Login
                 </Link>
               </div>

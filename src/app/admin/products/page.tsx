@@ -9,7 +9,7 @@ export default async function AdminProductsPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/auth/login")
+    redirect("/auth/login?next=/admin/products")
   }
 
   if (user.app_metadata?.role !== "admin") {

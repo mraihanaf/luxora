@@ -123,13 +123,13 @@ export function OutfitBuilder({
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/auth/login"
+                href="/auth/login?next=/playground"
                 className="inline-flex flex-1 items-center justify-center rounded-full border border-[color:var(--outline-variant)] bg-[color:var(--surface-container-high)] px-4 py-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--text-primary)]"
               >
                 Sign In
               </Link>
               <Link
-                href="/auth/sign-up"
+                href="/auth/sign-up?next=/playground"
                 className="inline-flex flex-1 items-center justify-center rounded-full border border-[color:var(--outline-variant)] bg-[color:var(--surface-container-lowest)] px-4 py-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]"
               >
                 Sign Up

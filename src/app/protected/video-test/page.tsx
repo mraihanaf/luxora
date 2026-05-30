@@ -9,9 +9,8 @@ export default async function VideoTestPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/auth/login")
+    redirect("/auth/login?next=/protected/video-test")
   }
 
   return <VideoTestClient />
 }
-
