@@ -1,15 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart/CartProvider";
 import { cn } from "@/lib/cn";
+import { formatIdr } from "@/lib/storefront";
+import type { StorefrontProduct } from "@/lib/types";
 
 export function ProductCard({
   product,
   featured,
 }: {
-  product: Product;
+  product: StorefrontProduct;
   featured?: boolean;
 }) {
   const { add } = useCart();
@@ -18,7 +19,7 @@ export function ProductCard({
     <article className="group cursor-pointer">
       <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm border border-[color:var(--outline-variant)] bg-[color:var(--surface-container-low)] shadow-sm">
         <Image
-          src={product.image}
+          src={product.imageUrl}
           alt={product.name}
           fill
           sizes="(min-width: 1024px) 420px, 100vw"
@@ -49,7 +50,7 @@ export function ProductCard({
           {product.name}
         </h3>
         <p className="mt-1 text-[14px] text-[color:var(--text-secondary)]">
-          ${product.price.toFixed(0)}
+          {formatIdr(product.priceIdr)}
         </p>
       </div>
     </article>

@@ -1,61 +1,40 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { products } from "@/lib/products";
-import type { ProductCategory, ProductTag } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product/ProductCard";
 import { cn } from "@/lib/cn";
+import orpc from "@/lib/orpc/client";
+import { productTypeLabels } from "@/lib/storefront";
+import type { StorefrontProductType } from "@/lib/types";
 
-type SortKey = "featured" | "priceAsc" | "priceDesc";
+type SortKey = "newest" | "priceAsc" | "priceDesc";
 
-const CATEGORIES: Array<{ id: ProductCategory | "all"; label: string }> = [
+const CATEGORIES: Array<{ id: StorefrontProductType | "all"; label: string }> = [
   { id: "all", label: "All" },
-  { id: "top", label: "Tops" },
-  { id: "bottom", label: "Bottoms" },
-  { id: "outerwear", label: "Outerwear" },
-  { id: "shoes", label: "Shoes" },
-  { id: "accessory", label: "Accessories" },
-];
-
-const TAGS: ProductTag[] = [
-  "new",
-  "editorial",
-  "tailored",
-  "sheer",
-  "liquid",
-  "runway",
-  "minimal",
-  "night",
-  "day",
-  "sustainable",
+  { id: "TOP", label: productTypeLabels.TOP },
+  { id: "BOTTOM", label: productTypeLabels.BOTTOM },
+  { id: "HEADWEAR", label: productTypeLabels.HEADWEAR },
 ];
 
 export default function CatalogPage() {
-  const [category, setCategory] = useState<ProductCategory | "all">("all");
-  const [tag, setTag] = useState<ProductTag | "all">("all");
-  const [sort, setSort] = useState<SortKey>("featured");
+  const listQuery = useQuery(orpc.listProducts.queryOptions());
+  const [category, setCategory] = useState<StorefrontProductType | "all">("all");
+  const [sort, setSort] = useState<SortKey>("newest");
   const [query, setQuery] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
-    let list = products.slice();
-    if (category !== "all") list = list.filter((p) => p.category === category);
-    if (tag !== "all") list = list.filter((p) => p.tags.includes(tag));
+    let list = (listQuery.data ?? []).slice();
+    if (category !== "all") list = list.filter((p) => p.type === category);
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q));
     }
-    if (sort === "priceAsc") list.sort((a, b) => a.price - b.price);
-    if (sort === "priceDesc") list.sort((a, b) => b.price - a.price);
-    if (sort === "featured") {
-      const score = (p: (typeof products)[number]) =>
-        (p.tags.includes("new") ? 20 : 0) +
-        (p.tags.includes("runway") ? 8 : 0) +
-        (p.tags.includes("editorial") ? 6 : 0);
-      list.sort((a, b) => score(b) - score(a));
-    }
+    if (sort === "priceAsc") list.sort((a, b) => a.priceIdr - b.priceIdr);
+    if (sort === "priceDesc") list.sort((a, b) => b.priceIdr - a.priceIdr);
     return list;
-  }, [category, tag, sort, query]);
+  }, [category, listQuery.data, query, sort]);
 
   return (
     <div className="mx-auto w-full max-w-[1440px] px-4 pb-24 md:px-16">
@@ -103,39 +82,19 @@ export default function CatalogPage() {
 
                 <div className="border-t border-[color:var(--outline-variant)] pt-8">
                   <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
-                    Refine
+                    Sort
                   </div>
                   <div className="mt-6">
-                    <div className="text-[12px] text-[color:var(--text-secondary)]">Tags</div>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setTag("all")}
-                        className={cn(
-                          "rounded-full border px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
-                          tag === "all"
-                            ? "border-[color:var(--outline)] bg-[color:var(--surface-container-lowest)] text-[color:var(--text-primary)]"
-                            : "border-[color:var(--outline-variant)] bg-[color:var(--surface-container-low)] text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]",
-                        )}
-                      >
-                        All
-                      </button>
-                      {TAGS.slice(0, 6).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setTag(t)}
-                          className={cn(
-                            "rounded-full border px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
-                            tag === t
-                              ? "border-[color:var(--outline)] bg-[color:var(--surface-container-lowest)] text-[color:var(--text-primary)]"
-                              : "border-[color:var(--outline-variant)] bg-[color:var(--surface-container-low)] text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]",
-                          )}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
+                    <select
+                      value={sort}
+                      onChange={(e) => setSort(e.target.value as SortKey)}
+                      className="w-full rounded-full border border-[color:var(--outline-variant)] bg-[color:var(--surface-container-lowest)] px-4 py-3 text-[12px] uppercase tracking-[0.18em] text-[color:var(--text-primary)]"
+                      aria-label="Sort products"
+                    >
+                      <option value="newest">Newest</option>
+                      <option value="priceAsc">Price ↑</option>
+                      <option value="priceDesc">Price ↓</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -164,7 +123,7 @@ export default function CatalogPage() {
                 Collections
               </div>
               <h1 className="mt-3 font-[family-name:var(--font-display)] text-[48px] leading-[1.05] tracking-[-0.02em] text-[color:var(--text-primary)]">
-                Season SS-26
+                Database Collection
               </h1>
             </div>
 
@@ -178,7 +137,7 @@ export default function CatalogPage() {
                 className="rounded-full border border-[color:var(--outline-variant)] bg-[color:var(--surface-container-lowest)] px-4 py-3 text-[12px] uppercase tracking-[0.18em] text-[color:var(--text-primary)]"
                 aria-label="Sort products"
               >
-                <option value="featured">Featured</option>
+                <option value="newest">Newest</option>
                 <option value="priceAsc">Price ↑</option>
                 <option value="priceDesc">Price ↓</option>
               </select>
@@ -186,7 +145,22 @@ export default function CatalogPage() {
           </div>
 
           <div className="mt-10">
-            {filtered.length === 0 ? (
+            {listQuery.isLoading ? (
+              <div className="glass-card px-6 py-14 text-center">
+                <div className="font-[family-name:var(--font-display)] text-3xl text-[color:var(--text-primary)]">
+                  Loading collection...
+                </div>
+              </div>
+            ) : listQuery.error ? (
+              <div className="glass-card px-6 py-14 text-center">
+                <div className="font-[family-name:var(--font-display)] text-3xl text-[color:var(--text-primary)]">
+                  Collection unavailable.
+                </div>
+                <div className="mt-3 text-[14px] text-[color:var(--text-secondary)]">
+                  {listQuery.error.message}
+                </div>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="glass-card px-6 py-14 text-center">
                 <div className="font-[family-name:var(--font-display)] text-3xl text-[color:var(--text-primary)]">
                   No matches.
@@ -284,37 +258,18 @@ export default function CatalogPage() {
 
           <div className="mt-8 border-t border-[color:var(--outline-variant)] pt-8">
             <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
-              Tags
+              Sort
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setTag("all")}
-                className={cn(
-                  "rounded-full border px-3 py-2 text-[11px] uppercase tracking-[0.22em] transition-colors",
-                  tag === "all"
-                    ? "border-[color:var(--outline)] bg-[color:var(--surface-container-low)] text-[color:var(--text-primary)]"
-                    : "border-[color:var(--outline-variant)] bg-[color:var(--surface-container-lowest)] text-[color:var(--text-secondary)]",
-                )}
-              >
-                All
-              </button>
-              {TAGS.slice(0, 10).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setTag(t)}
-                  className={cn(
-                    "rounded-full border px-3 py-2 text-[11px] uppercase tracking-[0.22em] transition-colors",
-                    tag === t
-                      ? "border-[color:var(--outline)] bg-[color:var(--surface-container-low)] text-[color:var(--text-primary)]"
-                      : "border-[color:var(--outline-variant)] bg-[color:var(--surface-container-lowest)] text-[color:var(--text-secondary)]",
-                  )}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              className="mt-4 w-full rounded-full border border-[color:var(--outline-variant)] bg-[color:var(--surface-container-lowest)] px-4 py-3 text-[12px] uppercase tracking-[0.18em] text-[color:var(--text-primary)]"
+              aria-label="Sort products"
+            >
+              <option value="newest">Newest</option>
+              <option value="priceAsc">Price ↑</option>
+              <option value="priceDesc">Price ↓</option>
+            </select>
           </div>
         </div>
       </div>

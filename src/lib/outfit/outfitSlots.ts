@@ -1,22 +1,22 @@
-import type { Outfit, OutfitSlotId, Product } from "@/lib/types";
+import type { Outfit, OutfitSlotId } from "@/lib/types"
+import { productTypeLabels, slotToProductType } from "@/lib/storefront"
 
 export const OUTFIT_SLOTS: Array<{
-  id: OutfitSlotId;
-  label: string;
-  accepts: Product["category"][];
+  id: OutfitSlotId
+  label: string
+  productType: ReturnType<typeof getSlotProductType>
 }> = [
-  { id: "top", label: "Top", accepts: ["top"] },
-  { id: "bottom", label: "Bottom", accepts: ["bottom"] },
-  { id: "outerwear", label: "Outerwear", accepts: ["outerwear"] },
-  { id: "shoes", label: "Shoes", accepts: ["shoes"] },
-  { id: "accessory", label: "Accessory", accepts: ["accessory"] },
-];
+  { id: "top", label: productTypeLabels.TOP, productType: getSlotProductType("top") },
+  { id: "bottom", label: productTypeLabels.BOTTOM, productType: getSlotProductType("bottom") },
+  { id: "headwear", label: productTypeLabels.HEADWEAR, productType: getSlotProductType("headwear") },
+]
 
 export const emptyOutfit = (): Outfit => ({
   top: null,
   bottom: null,
-  outerwear: null,
-  shoes: null,
-  accessory: null,
-});
+  headwear: null,
+})
 
+function getSlotProductType(slotId: OutfitSlotId) {
+  return slotToProductType[slotId]
+}

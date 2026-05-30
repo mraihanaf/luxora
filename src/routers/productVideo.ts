@@ -46,11 +46,67 @@ const productVideoSchema = z.object({
   videoKey: z.string().nullable(),
   videoUrl: z.string().nullable(),
   videoId: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
   products: z.array(productListItemSchema),
 })
 
+type SelectedProduct = {
+  id: string
+  type: z.infer<typeof productTypeSchema>
+  name: string
+  imageKey: string
+  priceIdr: number
+}
+
+type SelectedProductVideo = {
+  id: string
+  productsHash: string
+  videoKey: string | null
+  videoId: string | null
+  createdAt: Date
+  updatedAt: Date
+  products: SelectedProduct[]
+}
+
+type ProductVideoDbClient = {
+  product: {
+    findMany(args: unknown): Promise<SelectedProduct[]>
+  }
+  productVideo: {
+    findUnique(args: unknown): Promise<SelectedProductVideo | null>
+    create(args: unknown): Promise<SelectedProductVideo>
+    findMany(args: unknown): Promise<SelectedProductVideo[]>
+  }
+}
+
+const db = prisma as unknown as ProductVideoDbClient
+
 const sha256 = (value: string) => {
   return createHash("sha256").update(value).digest("hex")
+}
+
+const toProductListItem = async (product: SelectedProduct) => {
+  return {
+    id: product.id,
+    type: product.type,
+    name: product.name,
+    imageUrl: await signRequiredObjectKey(product.imageKey),
+    priceIdr: product.priceIdr,
+  }
+}
+
+const toProductVideo = async (productVideo: SelectedProductVideo) => {
+  return {
+    id: productVideo.id,
+    productsHash: productVideo.productsHash,
+    videoKey: productVideo.videoKey ?? null,
+    videoUrl: await signOptionalObjectKey(productVideo.videoKey),
+    videoId: productVideo.videoId ?? null,
+    createdAt: productVideo.createdAt.toISOString(),
+    updatedAt: productVideo.updatedAt.toISOString(),
+    products: await Promise.all(productVideo.products.map(toProductListItem)),
+  }
 }
 
 const generateProductVideo = os
@@ -69,7 +125,7 @@ const generateProductVideo = os
       })
     }
 
-    const products = await prisma.product.findMany({
+    const products = await db.product.findMany({
       where: { id: { in: ids } },
       select: {
         id: true,
@@ -88,13 +144,15 @@ const generateProductVideo = os
 
     const productsHash = sha256(ids.join(":"))
 
-    const existing = await prisma.productVideo.findUnique({
+    const existing = await db.productVideo.findUnique({
       where: { productsHash },
       select: {
         id: true,
         productsHash: true,
         videoKey: true,
         videoId: true,
+        createdAt: true,
+        updatedAt: true,
         products: {
           select: {
             id: true,
@@ -108,27 +166,12 @@ const generateProductVideo = os
     })
 
     if (existing) {
-      return {
-        id: existing.id,
-        productsHash: existing.productsHash,
-        videoKey: existing.videoKey ?? null,
-        videoUrl: await signOptionalObjectKey(existing.videoKey),
-        videoId: existing.videoId ?? null,
-        products: await Promise.all(
-          existing.products.map(async (p) => ({
-            id: p.id,
-            type: p.type,
-            name: p.name,
-            imageUrl: await signRequiredObjectKey(p.imageKey),
-            priceIdr: p.priceIdr,
-          }))
-        ),
-      }
+      return toProductVideo(existing)
     }
 
     let created
     try {
-      created = await prisma.productVideo.create({
+      created = await db.productVideo.create({
         data: {
           productsHash,
           products: {
@@ -140,6 +183,8 @@ const generateProductVideo = os
           productsHash: true,
           videoKey: true,
           videoId: true,
+          createdAt: true,
+          updatedAt: true,
           products: {
             select: {
               id: true,
@@ -152,13 +197,15 @@ const generateProductVideo = os
         },
       })
     } catch {
-      const raced = await prisma.productVideo.findUnique({
+      const raced = await db.productVideo.findUnique({
         where: { productsHash },
         select: {
           id: true,
           productsHash: true,
           videoKey: true,
           videoId: true,
+          createdAt: true,
+          updatedAt: true,
           products: {
             select: {
               id: true,
@@ -182,22 +229,7 @@ const generateProductVideo = os
       { idempotencyKey: productsHash }
     )
 
-    return {
-      id: created.id,
-      productsHash: created.productsHash,
-      videoKey: created.videoKey ?? null,
-      videoUrl: await signOptionalObjectKey(created.videoKey),
-      videoId: created.videoId ?? null,
-      products: await Promise.all(
-        created.products.map(async (p) => ({
-          id: p.id,
-          type: p.type,
-          name: p.name,
-          imageUrl: await signRequiredObjectKey(p.imageKey),
-          priceIdr: p.priceIdr,
-        }))
-      ),
-    }
+    return toProductVideo(created)
   })
 
 const getProductVideo = os
@@ -209,13 +241,15 @@ const getProductVideo = os
   )
   .output(productVideoSchema)
   .handler(async ({ input }) => {
-    const productVideo = await prisma.productVideo.findUnique({
+    const productVideo = await db.productVideo.findUnique({
       where: { productsHash: input.productsHash },
       select: {
         id: true,
         productsHash: true,
         videoKey: true,
         videoId: true,
+        createdAt: true,
+        updatedAt: true,
         products: {
           select: {
             id: true,
@@ -234,25 +268,45 @@ const getProductVideo = os
       })
     }
 
-    return {
-      id: productVideo.id,
-      productsHash: productVideo.productsHash,
-      videoKey: productVideo.videoKey ?? null,
-      videoUrl: await signOptionalObjectKey(productVideo.videoKey),
-      videoId: productVideo.videoId ?? null,
-      products: await Promise.all(
-        productVideo.products.map(async (p) => ({
-          id: p.id,
-          type: p.type,
-          name: p.name,
-          imageUrl: await signRequiredObjectKey(p.imageKey),
-          priceIdr: p.priceIdr,
-        }))
-      ),
-    }
+    return toProductVideo(productVideo)
+  })
+
+const listProductVideos = os
+  .output(z.array(productVideoSchema))
+  .handler(async () => {
+    const productVideos = await db.productVideo.findMany({
+      where: {
+        videoKey: {
+          not: null,
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+      select: {
+        id: true,
+        productsHash: true,
+        videoKey: true,
+        videoId: true,
+        createdAt: true,
+        updatedAt: true,
+        products: {
+          select: {
+            id: true,
+            type: true,
+            name: true,
+            imageKey: true,
+            priceIdr: true,
+          },
+        },
+      },
+    })
+
+    return Promise.all(productVideos.map(toProductVideo))
   })
 
 export const productVideoRouter = {
   generateProductVideo,
   getProductVideo,
+  listProductVideos,
 }

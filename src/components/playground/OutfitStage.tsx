@@ -1,14 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { productById } from "@/lib/products";
-import type { Outfit, Product } from "@/lib/types";
+import type { StorefrontProduct } from "@/lib/types";
 
-export function OutfitStage({ outfit }: { outfit: Outfit }) {
-  const picks = Object.values(outfit)
-    .map((id) => (id ? productById.get(id) : null))
-    .filter((p): p is Product => Boolean(p));
-
+export function OutfitStage({ picks }: { picks: StorefrontProduct[] }) {
   const prompt = picks.length
     ? `high-fashion editorial studio photograph of a model wearing ${picks
         .map((p) => p.name)
@@ -37,7 +32,7 @@ export function OutfitStage({ outfit }: { outfit: Outfit }) {
       <div className="absolute left-6 top-6 flex items-center gap-2">
         <div className="h-2 w-2 rounded-full bg-[color:var(--primary-container)] animate-pulse" />
         <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-[color:var(--primary-container)]">
-          Neural Render Active
+          Outfit Preview
         </div>
       </div>
 

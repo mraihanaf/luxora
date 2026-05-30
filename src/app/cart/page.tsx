@@ -2,23 +2,42 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { CartLineItem } from "@/components/cart/CartLineItem";
 import { useCart } from "@/lib/cart/CartProvider";
-import { productById } from "@/lib/products";
+import orpc from "@/lib/orpc/client";
+import { formatIdr } from "@/lib/storefront";
 
 export default function CartPage() {
   const { lines, clear } = useCart();
+  const listQuery = useQuery(orpc.listProducts.queryOptions());
+
+  const productMap = useMemo(() => {
+    return new Map((listQuery.data ?? []).map((product) => [product.id, product]));
+  }, [listQuery.data]);   
+
+  const resolvedLines = useMemo(() => {
+    return lines.reduce<Array<{ line: (typeof lines)[number]; product: NonNullable<ReturnType<typeof productMap.get>> }>>(
+      (entries, line) => {
+        const product = productMap.get(line.productId);
+        if (product) {
+          entries.push({ line, product });
+        }
+        return entries;
+      },
+      [],
+    );
+  }, [lines, productMap]);
 
   const totals = useMemo(() => {
-    const subtotal = lines.reduce((sum, l) => {
-      const p = productById.get(l.productId);
-      return sum + (p ? p.price * l.qty : 0);
+    const subtotal = resolvedLines.reduce((sum, entry) => {
+      return sum + entry.product.priceIdr * entry.line.qty;
     }, 0);
     const shipping = 0;
     const total = subtotal + shipping;
-    const items = lines.reduce((sum, l) => sum + l.qty, 0);
+    const items = resolvedLines.reduce((sum, entry) => sum + entry.line.qty, 0);
     return { subtotal, shipping, total, items };
-  }, [lines]);
+  }, [resolvedLines]);
 
   return (
     <div className="mx-auto w-full max-w-[1440px] px-4 pb-24 md:px-16">
@@ -192,10 +211,32 @@ export default function CartPage() {
                   </Link>
                 </div>
               </div>
+            ) : listQuery.isLoading ? (
+              <div className="glass-card px-6 py-10 text-[14px] text-[color:var(--text-secondary)]">
+                Loading your wardrobe...
+              </div>
+            ) : listQuery.error ? (
+              <div className="glass-card px-6 py-10">
+                <div className="font-[family-name:var(--font-display)] text-[26px] text-[color:var(--text-primary)]">
+                  Wardrobe unavailable.
+                </div>
+                <div className="mt-3 text-[14px] leading-[1.8] text-[color:var(--text-secondary)]">
+                  {listQuery.error.message}
+                </div>
+              </div>
+            ) : resolvedLines.length === 0 ? (
+              <div className="glass-card px-6 py-10">
+                <div className="font-[family-name:var(--font-display)] text-[26px] text-[color:var(--text-primary)]">
+                  Your saved pieces are no longer available.
+                </div>
+                <div className="mt-3 text-[14px] leading-[1.8] text-[color:var(--text-secondary)]">
+                  Browse the collection to add currently available products back into your wardrobe.
+                </div>
+              </div>
             ) : (
               <div className="space-y-4">
-                {lines.map((l) => (
-                  <CartLineItem key={l.productId} line={l} />
+                {resolvedLines.map(({ line, product }) => (
+                  <CartLineItem key={line.productId} line={line} product={product} />
                 ))}
               </div>
             )}
@@ -209,9 +250,12 @@ export default function CartPage() {
                 Order Summary
               </h2>
               <div className="mt-8 space-y-4 text-[14px] text-[color:var(--text-secondary)]">
-                <Row label={`Subtotal (${totals.items} items)`} value={`$${totals.subtotal.toFixed(2)}`} />
+                <Row label={`Subtotal (${totals.items} items)`} value={formatIdr(totals.subtotal)} />
                 <Row label="Shipping" value={totals.subtotal ? "Complimentary" : "—"} />
-                <Row label="Estimated Tax" value={totals.subtotal ? `$${(totals.subtotal * 0.08).toFixed(2)}` : "—"} />
+                <Row
+                  label="Estimated Tax"
+                  value={totals.subtotal ? formatIdr(Math.round(totals.subtotal * 0.08)) : "—"}
+                />
               </div>
               <div className="mt-8 border-t border-[color:var(--outline-variant)] pt-6">
                 <div className="flex items-end justify-between gap-4">
@@ -220,10 +264,10 @@ export default function CartPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-[color:var(--text-secondary)]">
-                      USD
+                      IDR
                     </div>
                     <div className="font-[family-name:var(--font-display)] text-[36px] tracking-[-0.02em] text-[color:var(--primary-container)]">
-                      ${(totals.total + (totals.subtotal ? totals.subtotal * 0.08 : 0)).toFixed(2)}
+                      {formatIdr(totals.total + (totals.subtotal ? Math.round(totals.subtotal * 0.08) : 0))}
                     </div>
                   </div>
                 </div>

@@ -15,8 +15,6 @@ const NAV: NavItem[] = [
   { href: "/catalog", label: "Collections" },
   { href: "/playground", label: "Studio" },
   { href: "/ideas", label: "Ideas" },
-  { href: "/atelier", label: "Atelier" },
-  { href: "/editorial", label: "Editorial" },
 ];
 
 function NavLinks({

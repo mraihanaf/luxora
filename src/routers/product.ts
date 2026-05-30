@@ -36,15 +36,15 @@ const productListItemSchema = z.object({
   id: z.string(),
   type: productTypeSchema,
   name: z.string(),
+  description: z.string().nullable(),
   imageUrl: z.string(),
   priceIdr: z.number().int(),
+  videoUrl: z.string().nullable(),
 })
 
 const productDetailSchema = productListItemSchema.extend({
-  description: z.string().nullable(),
   imageKey: z.string(),
   videoKey: z.string().nullable(),
-  videoUrl: z.string().nullable(),
 })
 
 const listProducts = os
@@ -55,7 +55,9 @@ const listProducts = os
         id: true,
         type: true,
         name: true,
+        description: true,
         imageKey: true,
+        videoKey: true,
         priceIdr: true,
       },
       orderBy: {
@@ -68,8 +70,10 @@ const listProducts = os
         id: p.id,
         type: p.type,
         name: p.name,
+        description: p.description ?? null,
         imageUrl: await signRequiredObjectKey(p.imageKey),
         priceIdr: p.priceIdr,
+        videoUrl: await signOptionalObjectKey(p.videoKey),
       }))
     )
 
