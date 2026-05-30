@@ -1,7 +1,5 @@
 import { schemaTask, wait } from "@trigger.dev/sdk/v3"
 import { z } from "zod"
-import { readFile } from "fs/promises"
-import path from "path"
 import sharp from "sharp"
 import prisma from "@/lib/prisma"
 import { pixverse } from "@/lib/pixverse"
@@ -9,22 +7,8 @@ import { s3 } from "@/lib/s3"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 const lookbookPrompt = `A fashion lookbook style video. They poses in a minimalist studio with a solid light green background. The camera begins with a medium shot of her raising her hand gracefully, then cuts to dynamic close-up macro shots highlighting the texture of the fabric. and finishes with a full-body wide shot of her standing casually with her hands in her pockets. Professional, bright studio lighting with soft shadows`
-
-const getAvatarPath = () => {
-  const value = process.env.PRODUCT_VIDEO_AVATAR_PATH
-  if (!value) {
-    throw new Error("PRODUCT_VIDEO_AVATAR_PATH is not set")
-  }
-  return path.isAbsolute(value) ? value : path.join(process.cwd(), value)
-}
-
-const getContentTypeFromFilename = (filename: string) => {
-  const ext = path.extname(filename).toLowerCase()
-  if (ext === ".png") return "image/png"
-  if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg"
-  if (ext === ".webp") return "image/webp"
-  throw new Error(`Unsupported avatar image extension: ${ext}`)
-}
+const AVATAR_IMAGE_URL =
+  "https://media.pixverse.ai/pixverse%2Ft2i%2Fori%2Fc723da5a-0f66-4dc3-a5d0-0134daf57769.png"
 
 const downloadImageToBuffer = async (url: string) => {
   const res = await fetch(url)
@@ -121,12 +105,11 @@ export const generateProductVideo = schemaTask({
       return { videoUrl: await signRequiredObjectKey(productVideo.videoKey) }
     }
 
-    const avatarPath = getAvatarPath()
-    const avatarBytes = await readFile(avatarPath)
+    const avatarBytes = await downloadImageToBuffer(AVATAR_IMAGE_URL)
     const avatarUpload = await pixverse.uploadImageFromBuffer({
       bytes: avatarBytes,
-      filename: path.basename(avatarPath),
-      contentType: getContentTypeFromFilename(avatarPath),
+      filename: "avatar-model.png",
+      contentType: "image/png",
     })
 
     const sortedProducts = [...productVideo.products].sort((a, b) => a.type.localeCompare(b.type))
