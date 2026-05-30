@@ -1,21 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+
+function useMediaQuery(query: string) {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      const mql = window.matchMedia(query);
+      const handler = () => onStoreChange();
+      mql.addEventListener("change", handler);
+      return () => mql.removeEventListener("change", handler);
+    },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
+}
 
 export function LuxoraCursor() {
-  const [enabled, setEnabled] = useState(false);
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const finePointer = useMediaQuery("(pointer: fine)");
+  const enabled = finePointer && !reducedMotion;
   const dotRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
 
   const pos = useRef({ x: 0, y: 0 });
   const target = useRef({ x: 0, y: 0 });
   const raf = useRef<number | null>(null);
-
-  useEffect(() => {
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    const fine = window.matchMedia?.("(pointer: fine)").matches;
-    setEnabled(Boolean(fine && !reduced));
-  }, []);
 
   useEffect(() => {
     if (!enabled) return;

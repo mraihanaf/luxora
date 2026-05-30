@@ -1,4 +1,4 @@
-export type ProductCategory = "top" | "bottom" | "outerwear" | "shoes" | "accessory";
+export type ProductCategory = "top" | "bottom" | "accessory";
 
 export type ProductTag =
   | "new"
@@ -26,7 +26,6 @@ export type CartLine = {
   qty: number;
 };
 
-export type OutfitSlotId = "top" | "bottom" | "outerwear" | "shoes" | "accessory";
+export type OutfitSlotId = "top" | "bottom" | "accessory";
 
 export type Outfit = Record<OutfitSlotId, string | null>;
-

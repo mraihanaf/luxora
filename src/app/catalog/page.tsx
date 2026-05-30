@@ -12,8 +12,6 @@ const CATEGORIES: Array<{ id: ProductCategory | "all"; label: string }> = [
   { id: "all", label: "All" },
   { id: "top", label: "Tops" },
   { id: "bottom", label: "Bottoms" },
-  { id: "outerwear", label: "Outerwear" },
-  { id: "shoes", label: "Shoes" },
   { id: "accessory", label: "Accessories" },
 ];
 
