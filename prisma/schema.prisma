@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/@generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProductType {
+  TOP
+  BOTTOM
+  HEADWEAR
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  type        ProductType
+  name        String
+  description String?
+  imageKey    String
+  videoKey    String?
+  priceIdr    Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  productVideos ProductVideo[]
+
+  @@index([type])
+  @@index([name])
+}
+
+model ProductVideo {
+  id           String    @id @default(cuid())
+  productsHash String    @unique
+  videoKey     String?
+  videoId      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  products Product[]
+
+  @@index([productsHash])
+}
