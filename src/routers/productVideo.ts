@@ -36,8 +36,10 @@ const productListItemSchema = z.object({
   id: z.string(),
   type: productTypeSchema,
   name: z.string(),
+  description: z.string().nullable(),
   imageUrl: z.string(),
   priceIdr: z.number().int(),
+  videoUrl: z.string().nullable(),
 })
 
 const productVideoSchema = z.object({
@@ -46,6 +48,8 @@ const productVideoSchema = z.object({
   videoKey: z.string().nullable(),
   videoUrl: z.string().nullable(),
   videoId: z.string().nullable(),
+  workflowStatus: z.enum(["PENDING", "PROCESSING", "COMPLETED", "FAILED"]),
+  errorMessage: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
   products: z.array(productListItemSchema),
@@ -55,7 +59,9 @@ type SelectedProduct = {
   id: string
   type: z.infer<typeof productTypeSchema>
   name: string
+  description: string | null
   imageKey: string
+  videoKey: string | null
   priceIdr: number
 }
 
@@ -64,6 +70,8 @@ type SelectedProductVideo = {
   productsHash: string
   videoKey: string | null
   videoId: string | null
+  workflowStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
+  errorMessage: string | null
   createdAt: Date
   updatedAt: Date
   products: SelectedProduct[]
@@ -91,8 +99,10 @@ const toProductListItem = async (product: SelectedProduct) => {
     id: product.id,
     type: product.type,
     name: product.name,
+    description: product.description,
     imageUrl: await signRequiredObjectKey(product.imageKey),
     priceIdr: product.priceIdr,
+    videoUrl: await signOptionalObjectKey(product.videoKey),
   }
 }
 
@@ -103,6 +113,8 @@ const toProductVideo = async (productVideo: SelectedProductVideo) => {
     videoKey: productVideo.videoKey ?? null,
     videoUrl: await signOptionalObjectKey(productVideo.videoKey),
     videoId: productVideo.videoId ?? null,
+    workflowStatus: productVideo.workflowStatus,
+    errorMessage: productVideo.errorMessage,
     createdAt: productVideo.createdAt.toISOString(),
     updatedAt: productVideo.updatedAt.toISOString(),
     products: await Promise.all(productVideo.products.map(toProductListItem)),
@@ -131,7 +143,9 @@ const generateProductVideo = os
         id: true,
         type: true,
         name: true,
+        description: true,
         imageKey: true,
+        videoKey: true,
         priceIdr: true,
       },
     })
@@ -151,6 +165,8 @@ const generateProductVideo = os
         productsHash: true,
         videoKey: true,
         videoId: true,
+        workflowStatus: true,
+        errorMessage: true,
         createdAt: true,
         updatedAt: true,
         products: {
@@ -158,7 +174,9 @@ const generateProductVideo = os
             id: true,
             type: true,
             name: true,
+            description: true,
             imageKey: true,
+            videoKey: true,
             priceIdr: true,
           },
         },
@@ -183,6 +201,8 @@ const generateProductVideo = os
           productsHash: true,
           videoKey: true,
           videoId: true,
+          workflowStatus: true,
+          errorMessage: true,
           createdAt: true,
           updatedAt: true,
           products: {
@@ -190,7 +210,9 @@ const generateProductVideo = os
               id: true,
               type: true,
               name: true,
+              description: true,
               imageKey: true,
+              videoKey: true,
               priceIdr: true,
             },
           },
@@ -204,6 +226,8 @@ const generateProductVideo = os
           productsHash: true,
           videoKey: true,
           videoId: true,
+          workflowStatus: true,
+          errorMessage: true,
           createdAt: true,
           updatedAt: true,
           products: {
@@ -211,7 +235,9 @@ const generateProductVideo = os
               id: true,
               type: true,
               name: true,
+              description: true,
               imageKey: true,
+              videoKey: true,
               priceIdr: true,
             },
           },
@@ -248,6 +274,8 @@ const getProductVideo = os
         productsHash: true,
         videoKey: true,
         videoId: true,
+        workflowStatus: true,
+        errorMessage: true,
         createdAt: true,
         updatedAt: true,
         products: {
@@ -255,7 +283,9 @@ const getProductVideo = os
             id: true,
             type: true,
             name: true,
+            description: true,
             imageKey: true,
+            videoKey: true,
             priceIdr: true,
           },
         },
@@ -288,6 +318,8 @@ const listProductVideos = os
         productsHash: true,
         videoKey: true,
         videoId: true,
+        workflowStatus: true,
+        errorMessage: true,
         createdAt: true,
         updatedAt: true,
         products: {
@@ -295,7 +327,9 @@ const listProductVideos = os
             id: true,
             type: true,
             name: true,
+            description: true,
             imageKey: true,
+            videoKey: true,
             priceIdr: true,
           },
         },

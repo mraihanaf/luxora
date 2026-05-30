@@ -4,10 +4,10 @@ export type StorefrontProduct = {
   id: string;
   type: StorefrontProductType;
   name: string;
-  description?: string | null;
+  description: string | null;
   imageUrl: string;
   priceIdr: number;
-  videoUrl?: string | null;
+  videoUrl: string | null;
 };
 
 export type StorefrontProductVideoStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";

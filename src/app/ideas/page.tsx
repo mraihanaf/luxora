@@ -3,9 +3,29 @@
 import { useQuery } from "@tanstack/react-query";
 import orpc from "@/lib/orpc/client";
 import { formatIdr, productTypeLabels } from "@/lib/storefront";
-import type { StorefrontProductVideo } from "@/lib/types";
+import type { StorefrontProductType } from "@/lib/types";
 
-type IdeaItem = StorefrontProductVideo & {
+type GalleryVideoProduct = {
+  id: string
+  type: StorefrontProductType
+  name: string
+  imageUrl: string
+  priceIdr: number
+}
+
+type GalleryVideo = {
+  id: string
+  productsHash: string
+  videoKey: string | null
+  videoUrl: string | null
+  videoId: string | null
+  createdAt: string
+  updatedAt: string
+  products: GalleryVideoProduct[]
+}
+
+type IdeaItem = Omit<GalleryVideo, "videoUrl"> & {
+  videoUrl: string
   title: string
   description: string
 }
@@ -72,12 +92,14 @@ function IdeaCard({
   );
 }
 
-function getIdeaItems(items: StorefrontProductVideo[]): IdeaItem[] {
-  return items.map((item) => ({
-    ...item,
-    title: item.products.map((product) => product.name).join(" + "),
-    description: `Completed lookbook video for ${item.products.length} selected product${item.products.length === 1 ? "" : "s"}.`,
-  }));
+function getIdeaItems(items: GalleryVideo[]): IdeaItem[] {
+  return items
+    .filter((item): item is GalleryVideo & { videoUrl: string } => Boolean(item.videoUrl))
+    .map((item) => ({
+      ...item,
+      title: item.products.map((product) => product.name).join(" + "),
+      description: `Completed lookbook video for ${item.products.length} selected product${item.products.length === 1 ? "" : "s"}.`,
+    }));
 }
 
 export default function IdeasPage() {
