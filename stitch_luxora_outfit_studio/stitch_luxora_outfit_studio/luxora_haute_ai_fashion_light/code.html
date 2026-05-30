@@ -1,0 +1,221 @@
+<!DOCTYPE html><html class="" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>LUXORA - Intelligent Fashion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&amp;family=Geist:wght@300;400;500&amp;family=Space+Mono:wght@400&amp;family=Outfit:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-container-high": "#eae7e7", "on-surface-variant": "#424844", "surface-container": "#f0eded", "on-secondary-fixed": "#271900", "error-container": "#ffdad6", "surface-container-low": "#f6f3f2", "on-secondary": "#ffffff", "secondary-container": "#fdd798", surface: "#fcf9f8", "surface-container-lowest": "#ffffff", "on-primary-fixed": "#002110", "primary-container": "#002311", "on-secondary-fixed-variant": "#5b4311", "surface-dim": "#dcd9d9", "on-tertiary-fixed": "#1c1c18", "secondary-fixed": "#ffdea8", "on-error": "#ffffff", error: "#ba1a1a", "surface-bright": "#fcf9f8", "surface-container-highest": "#e5e2e1", "surface-tint": "#306948", "inverse-primary": "#98d4ab", "inverse-surface": "#313030", "outline-variant": "#c2c8c2", "on-tertiary": "#ffffff", "on-secondary-container": "#785c29", outline: "#737873", "tertiary-fixed-dim": "#c9c6c0", primary: "#000401", "on-tertiary-fixed-variant": "#474742", "on-primary-container": "#58916c", "inverse-on-surface": "#f3f0ef", tertiary: "#020201", "primary-fixed": "#b3f1c6", secondary: "#755a26", "on-primary": "#ffffff", "tertiary-container": "#1d1d19", "on-tertiary-container": "#86857f", "secondary-fixed-dim": "#e6c183", "surface-variant": "#e5e2e1", "on-background": "#1c1b1b", "primary-fixed-dim": "#98d4ab", "tertiary-fixed": "#e5e2db", "on-error-container": "#93000a", "on-primary-fixed-variant": "#155131", background: "#fcf9f8", "on-surface": "#1c1b1b"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}, spacing: {"margin-desktop": "64px", "margin-mobile": "16px", "card-gap": "32px", "gutter-desktop": "24px", "section-gap": "120px", lg: "48px", xl: "80px", sm: "12px", md: "24px", gutter: "24px", xs: "4px", base: "8px"}, fontFamily: {"nav-link": ["Geist"], "studio-playful": ["Outfit"], "display-lg": ["Cormorant Garamond"], "card-headline": ["Cormorant Garamond"], "display-lg-mobile": ["Cormorant Garamond"], "section-title": ["Cormorant Garamond"], "body-base": ["Geist"], "label-caps": ["Space Mono"], headline: ["Libre Caslon Text"], display: ["Libre Caslon Text"], body: ["Geist"], label: ["Geist"]}, fontSize: {"nav-link": ["13px", {lineHeight: "16px", letterSpacing: "0.12em", fontWeight: "400"}], "studio-playful": ["14px", {lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "500"}], "display-lg": ["110px", {lineHeight: "105px", letterSpacing: "-0.02em", fontWeight: "300"}], "card-headline": ["28px", {lineHeight: "34px", fontWeight: "300"}], "display-lg-mobile": ["56px", {lineHeight: "60px", letterSpacing: "-0.01em", fontWeight: "300"}], "section-title": ["64px", {lineHeight: "72px", fontWeight: "400"}], "body-base": ["16px", {lineHeight: "1.7", letterSpacing: "0", fontWeight: "300"}], "label-caps": ["11px", {lineHeight: "14px", letterSpacing: "0.15em", fontWeight: "400"}]}}}};</script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        }
+        
+        .gold-glow-hover:hover {
+            box-shadow: 0 4px 24px rgba(117, 90, 38, 0.15);
+            transform: scale(1.02);
+        }
+
+        .neural-circuit {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.15;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: circuitFlow 20s linear infinite;
+        }
+
+        @keyframes circuitFlow {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-primary-container antialiased selection:bg-secondary selection:text-surface-container-lowest min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-black/5 shadow-sm transition-all duration-300" id="global-nav">
+<div class="flex justify-between items-center h-16 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Brand -->
+<a class="font-display-lg text-2xl tracking-tighter text-primary-container z-10" href="#">
+                LUXORA
+            </a>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
+<a class="font-nav-link text-nav-link uppercase tracking-widest text-primary-container border-b border-primary-container pb-1 hover:opacity-80 transition-all duration-300" href="#">Collections</a>
+<a class="font-nav-link text-nav-link uppercase tracking-widest text-on-surface-variant hover:text-primary-container transition-colors duration-300 hover:opacity-80" href="#">Studio</a><a class="font-nav-link text-nav-link uppercase tracking-widest text-on-surface-variant hover:text-primary-container transition-colors duration-300 hover:opacity-80" href="#">Ideas</a>
+<a class="font-nav-link text-nav-link uppercase tracking-widest text-on-surface-variant hover:text-primary-container transition-colors duration-300 hover:opacity-80" href="#">Atelier</a>
+<a class="font-nav-link text-nav-link uppercase tracking-widest text-on-surface-variant hover:text-primary-container transition-colors duration-300 hover:opacity-80" href="#">Editorial</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center space-x-4 z-10 text-primary-container">
+<button class="hover:opacity-80 transition-all duration-300 hover:scale-95">
+<span class="material-symbols-outlined text-xl">search</span>
+</button>
+<button class="hover:opacity-80 transition-all duration-300 hover:scale-95">
+<span class="material-symbols-outlined text-xl">shopping_bag</span>
+</button>
+<button class="hover:opacity-80 transition-all duration-300 hover:scale-95 hidden md:block">
+<span class="material-symbols-outlined text-xl">person</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative h-screen min-h-[800px] flex items-center justify-center overflow-hidden bg-surface-container-low">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Fashion silhouette" class="w-full h-full object-cover object-center opacity-30" data-alt="A high-fashion silhouette draped in flowing, ethereal dark fabric stands against a deep, atmospheric void. The scene is illuminated by subtle, localized golden light that refracts off the material, creating a sense of invisible technology and visible luxury. The mood is calm, authoritative, and sophisticated, reflecting a premium AI-powered atelier aesthetic. Minimalist composition with heavy whitespace emphasizes the elegant form." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcBtbrXvqWbBWONKjefkYzU01cQRQ1x81NEGLD7ytWzsETp1gVF2lVhXzHf8RgVxE4dLXYQjQkw4QP0f99yk-UIORkVwxPWsE5rpicy89MoGyMuK0XmnqrGVxpoqS1m3JhfzamC_pnRg4Jo9Mz5nLBFMVjbGd4UxzMY7LDWof7M-IFaqWja_klzi9rlPLhe05aQOR4ENt71xBqPJHWxSVb9S7saA2mWG8o4gDzuk_UaSpVxJuW92TN3UvsIuZjCGerm_GqCPqPMgyS">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/80"></div>
+<div class="neural-circuit"></div>
+</div>
+<!-- Content -->
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop w-full max-w-[1440px] mx-auto pt-20">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary-container italic mb-8 max-w-4xl mx-auto drop-shadow-sm">
+                    The Future of Fashion is <span class="text-secondary">Intelligent</span>
+</h1>
+<div class="flex flex-col md:flex-row items-center justify-center gap-6 mt-12">
+<button class="bg-primary-container text-surface-container-lowest font-label-caps text-label-caps uppercase px-8 py-4 rounded-sm gold-glow-hover transition-all duration-300 w-full md:w-auto tracking-widest">
+                        Explore Collections
+                    </button>
+<button class="glass-panel text-primary-container font-label-caps text-label-caps uppercase px-8 py-4 rounded-sm hover:bg-surface-variant/50 transition-all duration-300 w-full md:w-auto tracking-widest flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">play_circle</span>
+                        Watch Vision
+                    </button>
+</div>
+</div>
+</section>
+<!-- Feature Strip -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest relative z-20">
+<div class="max-w-[1440px] mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card-gap">
+<!-- Feature 1 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col items-start group hover:bg-surface-container/50 transition-colors duration-500">
+<div class="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<h3 class="font-card-headline text-card-headline text-primary-container mb-3">AI Styling</h3>
+<p class="font-body-base text-body-base text-on-surface-variant">Algorithmic precision meets haute couture sensibility for personalized aesthetics.</p>
+</div>
+<!-- Feature 2 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col items-start group hover:bg-surface-container/50 transition-colors duration-500">
+<div class="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined">diamond</span>
+</div>
+<h3 class="font-card-headline text-card-headline text-primary-container mb-3">Curated Drops</h3>
+<p class="font-body-base text-body-base text-on-surface-variant">Limited-edition conceptual pieces released through predictive trend modeling.</p>
+</div>
+<!-- Feature 3 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col items-start group hover:bg-surface-container/50 transition-colors duration-500">
+<div class="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined">straighten</span>
+</div>
+<h3 class="font-card-headline text-card-headline text-primary-container mb-3">Tailored Fit</h3>
+<p class="font-body-base text-body-base text-on-surface-variant">Biometric scanning ensures every garment is architected for your exact form.</p>
+</div>
+<!-- Feature 4 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col items-start group hover:bg-surface-container/50 transition-colors duration-500">
+<div class="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<h3 class="font-card-headline text-card-headline text-primary-container mb-3">Sustainable</h3>
+<p class="font-body-base text-body-base text-on-surface-variant">Zero-waste production protocols guided by intelligent resource allocation.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Outfit Studio Teaser -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest border-y border-black/5">
+<div class="max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center gap-16">
+<div class="w-full lg:w-1/2 order-2 lg:order-1 relative">
+<div class="aspect-[3/4] rounded-xl overflow-hidden glass-panel relative p-4">
+<img alt="Outfit Studio Preview" class="w-full h-full object-cover rounded-lg" data-alt="A pristine, minimalist studio setting showcasing an avant-garde outfit composed of rich, textured fabrics in deep earth tones and stark whites. The lighting is soft and directional, creating a glassmorphism effect around the edges of the frame. Subtle gold accents glint off the accessories. The atmosphere is an editorial calm, emphasizing the product's architectural structure over a dark, moody background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6b5goZyeE9rAzaOUYgPjfMKi80_e2T3-fpn6QFnO1olkOifko7CgjnZlg-7XC_kSoAtcyoZyTyzi8izTB9D1BCdDSlAuIH7FS1-4uwzYeXfd3rkzv67NsZU4uAem7LdHjjCbeSCDOl-Uuit9rlOyVfz69El4pDzpoyujk73Zw2HrT8l1Q-SE4lZg82RdCRAEBEwrtbzJ8Qeqisrz6U_L1FLCtUU4kNia-W-xzR5bHQJjW7rM4XQJ_SQxnTC7_FPUCtv9thJuHsADW">
+<!-- Floating UI Elements -->
+<div class="absolute bottom-8 right-8 glass-panel rounded-full p-4 flex items-center gap-3 backdrop-blur-md">
+<div class="w-3 h-3 bg-secondary rounded-full animate-pulse"></div>
+<span class="font-label-caps text-label-caps text-primary-container uppercase">Analyzing Palette</span>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2 order-1 lg:order-2 flex flex-col items-start">
+<span class="font-label-caps text-label-caps text-secondary tracking-widest uppercase mb-4">Interactive Experience</span>
+<h2 class="font-section-title text-section-title text-primary-container mb-6">Enter the Atelier</h2>
+<p class="font-body-base text-body-base text-on-surface-variant mb-10 max-w-lg">
+                        Collaborate with our neural stylist to generate looks that transcend seasons. Upload your parameters, and watch as raw concepts solidify into wearable art.
+                    </p>
+<a class="inline-flex items-center justify-center bg-surface-container/50 border border-secondary/30 text-primary-container font-studio-playful text-studio-playful px-8 py-4 rounded-full hover:bg-primary-container hover:text-surface-container-lowest transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 shadow-sm group" href="#">
+                        Launch Outfit Studio
+                        <span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Editorial Banner -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest relative overflow-hidden flex items-center justify-center min-h-[614px]">
+<div class="absolute inset-0 z-0 opacity-10">
+<img alt="Abstract texture" class="w-full h-full object-cover object-center filter grayscale" data-alt="Abstract macro photography of intricate fabric weaves merging with subtle geometric, technological patterns. The color palette consists of deep blacks, charcoal grays, and faint hints of metallic gold. The lighting is dramatic, highlighting the texture of the material to convey a high-fashion, premium aesthetic where artistry meets invisible technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ-C2Sw4Yc20wWFY_Z7PIm8_brsDCZOTjAdQd6YJmGnka5UuYepEggyHxfKWdnBpNJidkfFC70WLvlVOr5vzbht0xkVHpxmc325M6FrtNoXD7qIVa6KR-KkrXLaUiQ1DtPMPu6hASk_ba1t1lfjM35J7X5lVfFk9S88_gIhZYNAI-n4eVPbnorgaQxIWlDqgQx_KFAYH5A1zl_M-ZU5a24PydXBbHtuwqsyL7XrfQoYEXJ49vGGA8bUjex8dNkQfkpb9rw0IQhYYQi">
+</div>
+<div class="relative z-10 max-w-4xl mx-auto text-center">
+<span class="material-symbols-outlined text-secondary text-4xl mb-6 opacity-80">format_quote</span>
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary-container italic leading-tight">
+                    Technology doesn't replace style.<br>
+<span class="text-secondary">It reveals it.</span>
+</h2>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter-desktop max-w-[1440px] mx-auto flat">
+<div class="col-span-1 md:col-span-2 mb-12 md:mb-0">
+<div class="font-display-lg text-display-lg-mobile text-primary-container mb-6">
+                    LUXORA
+                </div>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-sm">
+                    Invisible Technology. Visible Luxury. Elevating personal style through intelligent design and editorial restraint.
+                </p>
+</div>
+<div class="col-span-1 flex flex-col space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase mb-4">Platform</h4>
+<a class="font-body-base text-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-body-base text-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Terms of Service</a>
+</div>
+<div class="col-span-1 flex flex-col space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase mb-4">Company</h4>
+<a class="font-body-base text-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Sustainability</a>
+<a class="font-body-base text-body-base text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Contact</a>
+</div>
+</div>
+<div class="max-w-[1440px] mx-auto mt-16 pt-8 border-t border-black/5 text-center md:text-left">
+<p class="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">
+                © 2024 LUXORA ATELIER. ALL RIGHTS RESERVED.
+            </p>
+</div>
+</footer>
+<script>
+        // Simple script for nav background opacity on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('global-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-surface-container-lowest/90', 'backdrop-blur-2xl');
+                nav.classList.remove('bg-surface-container-lowest/80', 'backdrop-blur-xl');
+            } else {
+                nav.classList.add('bg-surface-container-lowest/80', 'backdrop-blur-xl');
+                nav.classList.remove('bg-surface-container-lowest/90', 'backdrop-blur-2xl');
+            }
+        });
+    </script>
+
+
+</body></html>

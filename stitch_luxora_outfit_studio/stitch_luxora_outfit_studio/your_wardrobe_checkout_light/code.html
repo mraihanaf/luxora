@@ -1,0 +1,206 @@
+<!DOCTYPE html><html class="" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Luxora - Checkout</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&amp;family=Geist:wght@300;400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-container-high": "#eae7e7", "on-surface-variant": "#424844", "surface-container": "#f0eded", "on-secondary-fixed": "#271900", "error-container": "#ffdad6", "surface-container-low": "#f6f3f2", "on-secondary": "#ffffff", "secondary-container": "#fdd798", surface: "#fcf9f8", "surface-container-lowest": "#ffffff", "on-primary-fixed": "#002110", "primary-container": "#002311", "on-secondary-fixed-variant": "#5b4311", "surface-dim": "#dcd9d9", "on-tertiary-fixed": "#1c1c18", "secondary-fixed": "#ffdea8", "on-error": "#ffffff", error: "#ba1a1a", "surface-bright": "#fcf9f8", "surface-container-highest": "#e5e2e1", "surface-tint": "#306948", "inverse-primary": "#98d4ab", "inverse-surface": "#313030", "outline-variant": "#c2c8c2", "on-tertiary": "#ffffff", "on-secondary-container": "#785c29", outline: "#737873", "tertiary-fixed-dim": "#c9c6c0", primary: "#000401", "on-tertiary-fixed-variant": "#474742", "on-primary-container": "#58916c", "inverse-on-surface": "#f3f0ef", tertiary: "#020201", "primary-fixed": "#b3f1c6", secondary: "#755a26", "on-primary": "#ffffff", "tertiary-container": "#1d1d19", "on-tertiary-container": "#86857f", "secondary-fixed-dim": "#e6c183", "surface-variant": "#e5e2e1", "on-background": "#1c1b1b", "primary-fixed-dim": "#98d4ab", "tertiary-fixed": "#e5e2db", "on-error-container": "#93000a", "on-primary-fixed-variant": "#155131", background: "#fcf9f8", "on-surface": "#1c1b1b"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}, spacing: {"margin-desktop": "64px", "margin-mobile": "16px", lg: "48px", xl: "80px", sm: "12px", md: "24px", gutter: "24px", xs: "4px", base: "8px"}, fontFamily: {"label-md": ["Geist"], "headline-lg-mobile": ["Libre Caslon Text"], "body-md": ["Geist"], "display-lg": ["Libre Caslon Text"], "headline-md": ["Libre Caslon Text"], "headline-lg": ["Libre Caslon Text"], "label-sm": ["Geist"], "body-lg": ["Geist"], "nav-link": ["Geist"], "studio-playful": ["Outfit"], "card-headline": ["Libre Caslon Text"], "display-lg-mobile": ["Libre Caslon Text"], "section-title": ["Libre Caslon Text"], "body-base": ["Geist"], "label-caps": ["Space Mono"], headline: ["Libre Caslon Text"], display: ["Libre Caslon Text"], body: ["Geist"], label: ["Geist"]}, fontSize: {"label-md": ["14px", {lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "500"}], "headline-lg-mobile": ["32px", {lineHeight: "40px", fontWeight: "400"}], "body-md": ["16px", {lineHeight: "24px", fontWeight: "400"}], "display-lg": ["64px", {lineHeight: "72px", letterSpacing: "-0.02em", fontWeight: "400"}], "headline-md": ["28px", {lineHeight: "36px", fontWeight: "400"}], "headline-lg": ["40px", {lineHeight: "48px", fontWeight: "400"}], "label-sm": ["12px", {lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "600"}], "body-lg": ["18px", {lineHeight: "28px", fontWeight: "400"}], "nav-link": ["13px", {lineHeight: "16px", letterSpacing: "0.12em", fontWeight: "400"}], "studio-playful": ["14px", {lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "500"}], "card-headline": ["28px", {lineHeight: "34px", fontWeight: "300"}], "display-lg-mobile": ["56px", {lineHeight: "60px", letterSpacing: "-0.01em", fontWeight: "300"}], "section-title": ["64px", {lineHeight: "72px", fontWeight: "400"}], "body-base": ["16px", {lineHeight: "1.7", letterSpacing: "0", fontWeight: "300"}], "label-caps": ["11px", {lineHeight: "14px", letterSpacing: "0.15em", fontWeight: "400"}]}}}};</script>
+<style>
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--color-outline-variant);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+        
+        .gold-glow-hover:hover {
+            box-shadow: 0 0 24px var(--color-primary-fixed-dim);
+        }
+
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-surface);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-outline-variant);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-outline);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-base selection:bg-primary-container selection:text-on-primary overflow-x-hidden">
+<!-- Minimal Header for Transactional Flow -->
+<header class="w-full py-6 px-margin-mobile md:px-margin-desktop flex justify-center items-center border-b border-outline-variant bg-surface-container-lowest/80 backdrop-blur-xl fixed top-0 z-50"><div class="w-full max-w-[1440px] mx-auto flex justify-between items-center">
+<h1 class="font-display-lg-mobile text-3xl md:text-4xl tracking-tighter text-primary-container">LUXORA</h1>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-nav-link text-nav-link text-on-surface-variant hover:text-primary-container transition-colors uppercase" href="#">Collections</a>
+<a class="font-nav-link text-nav-link text-on-surface-variant hover:text-primary-container transition-colors uppercase" href="#">Studio</a>
+<a class="font-nav-link text-nav-link text-on-surface-variant hover:text-primary-container transition-colors uppercase" href="#">Ideas</a>
+<a class="font-nav-link text-nav-link text-on-surface-variant hover:text-primary-container transition-colors uppercase" href="#">Atelier</a>
+<a class="font-nav-link text-nav-link text-on-surface-variant hover:text-primary-container transition-colors uppercase" href="#">Editorial</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant">search</button>
+<button class="material-symbols-outlined text-on-surface-variant">shopping_bag</button>
+</div>
+</div></header>
+<main class="flex-grow pt-32 pb-xl px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full"><nav class="mb-8 -mt-4">
+<a class="inline-flex items-center gap-2 font-body-base text-[12px] uppercase tracking-[0.15em] text-on-surface-variant hover:text-primary-container transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="">Back</span>
+</a>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-x-16">
+<!-- Left Column: Checkout Flow & Cart Items -->
+<div class="col-span-1 lg:col-span-7 flex flex-col space-y-12">
+<!-- Breadcrumb -->
+<nav aria-label="Checkout Steps" class="flex items-center space-x-2 md:space-x-4 font-label-caps text-label-caps uppercase text-on-surface-variant overflow-x-auto pb-2">
+<span class="text-primary-container border-b border-primary-container pb-1 whitespace-nowrap">Shipping</span>
+<span class="material-symbols-outlined text-[14px] text-outline opacity-50">chevron_right</span>
+<span class="whitespace-nowrap">Payment</span>
+<span class="material-symbols-outlined text-[14px] text-outline opacity-50">chevron_right</span>
+<span class="whitespace-nowrap">Review</span>
+</nav>
+<!-- Shipping Address Form (Simulated Step 1) -->
+<section class="space-y-8 animate-[fadeIn_0.5s_ease-out]">
+<h2 class="font-section-title text-section-title text-on-surface text-4xl md:text-5xl">Shipping Information</h2>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">First Name</label>
+<input class="w-full bg-surface-container-low border-t-0 border-l-0 border-r-0 border-b border-outline focus:border-primary-container focus:ring-0 text-on-surface font-body-base py-3 transition-colors duration-300" placeholder="Jane" type="text">
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Last Name</label>
+<input class="w-full bg-surface-container-low border-t-0 border-l-0 border-r-0 border-b border-outline focus:border-primary-container focus:ring-0 text-on-surface font-body-base py-3 transition-colors duration-300" placeholder="Doe" type="text">
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Address</label>
+<input class="w-full bg-surface-container-low border-t-0 border-l-0 border-r-0 border-b border-outline focus:border-primary-container focus:ring-0 text-on-surface font-body-base py-3 transition-colors duration-300" placeholder="123 Luxury Lane, Suite 400" type="text">
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="space-y-2 md:col-span-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant">City</label>
+<input class="w-full bg-surface-container-low border-t-0 border-l-0 border-r-0 border-b border-outline focus:border-primary-container focus:ring-0 text-on-surface font-body-base py-3 transition-colors duration-300" placeholder="New York" type="text">
+</div>
+<div class="space-y-2 md:col-span-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant">State/Province</label>
+<input class="w-full bg-surface-container-low border-t-0 border-l-0 border-r-0 border-b border-outline focus:border-primary-container focus:ring-0 text-on-surface font-body-base py-3 transition-colors duration-300" placeholder="NY" type="text">
+</div>
+<div class="space-y-2 md:col-span-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Zip/Postal</label>
+<input class="w-full bg-surface-container-low border-t-0 border-l-0 border-r-0 border-b border-outline focus:border-primary-container focus:ring-0 text-on-surface font-body-base py-3 transition-colors duration-300" placeholder="10001" type="text">
+</div>
+</div>
+</form>
+</section>
+<!-- Cart Items List (Glassmorphism) -->
+<section class="space-y-6 pt-8 border-t border-outline-variant">
+<h3 class="font-card-headline text-card-headline text-on-surface text-2xl">Your Selection</h3>
+<div class="space-y-4">
+<!-- Cart Item 1 -->
+<div class="glass-panel rounded-lg p-4 flex gap-6 items-center transition-transform hover:translate-x-1 duration-300">
+<div class="w-24 md:w-32 aspect-[3/4] bg-surface-container-high flex-shrink-0 rounded-sm overflow-hidden relative">
+<img alt="Item 1" class="w-full h-full object-cover" data-alt="A high-fashion studio shot of a structured, asymmetrical black blazer tailored with precise geometric lines. The fabric has a subtle sheen, catching soft, diffused high-key light that emphasizes its architectural silhouette. The background is an infinite, deep charcoal void, allowing the garment to float majestically. The overall aesthetic is minimalist, dark, and exceptionally premium, reflecting a sophisticated liquid-glass and tech-couture vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABZTC1ThG-tcXZ1iJhvAcu_sPwoCnUIJ4x27QCQtZF7nKjdoSPqyalRLU4MepA4_1EhNG6Ddq_aS3xfdKCojNINm78uvjh7pHEB_e7Az6YWGYJK2bugRKFWbOZuPq_J7rT5O_DUKaSNmNpyjBN97upJpQwtnxCx7AkK90sL4CRsR0tGMRkVJHlCpALAs9RMV4uxe4uC_VluPDs1zuUGOhNjWmZmqXXt3ugyL1sJeZKoEC4jcXHpIm6jRzitON3GmYeaopSM0v3514S">
+</div>
+<div class="flex-grow flex flex-col justify-between h-full py-2">
+<div>
+<h4 class="font-card-headline text-xl md:text-2xl text-on-surface mb-1">Obsidian Structure Blazer</h4>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-4">Size: 38R | Color: Noir</p>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-center space-x-3 bg-surface-container-highest rounded-full px-3 py-1 border border-outline-variant">
+<button class="text-on-surface-variant hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
+<span class="font-body-base text-sm text-on-surface w-4 text-center">1</span>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+<p class="font-nav-link text-nav-link text-primary-container text-lg tracking-normal">$1,250</p>
+</div>
+</div>
+<button aria-label="Remove item" class="self-start text-on-surface-variant hover:text-error transition-colors mt-2">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Cart Item 2 -->
+<div class="glass-panel rounded-lg p-4 flex gap-6 items-center transition-transform hover:translate-x-1 duration-300">
+<div class="w-24 md:w-32 aspect-[3/4] bg-surface-container-high flex-shrink-0 rounded-sm overflow-hidden relative">
+<img alt="Item 2" class="w-full h-full object-cover" data-alt="A close-up editorial photograph of a delicate, sheer silk blouse with subtle gold thread interwoven through the fabric. The material drapes fluidly like liquid glass over an invisible form, illuminated by a warm, ambient backlight that creates a soft halo effect. The setting is a minimalist, atmospheric dark void, prioritizing the intricate texture and light refraction of the garment. The mood is calm, luxurious, and quietly technological." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWm4qLp4LaTDZ5aYzZz2Z4lk5Npon4da9I572sZeBPcxthl3x0a9AnSGQsBCX_9Kbgjm_rlMycDY0Le1CLZWJwrfi9Edwb2HjU5O44sFUXrn1UhMY5DmMXW88dKzjWV1opOmUA9zq-t7VblpSbHJlx73XTAHkkZaI027baWKLp_Vr7d0db90DkZrR989T8BCneoWnAFmR4g_U6XhyO2j_y-Ht7QGWYOE_Af8chXv6Xf73wdfxv4g4QwIQqBNKW59DDvQ7wcu_gSJCO">
+</div>
+<div class="flex-grow flex flex-col justify-between h-full py-2">
+<div>
+<h4 class="font-card-headline text-xl md:text-2xl text-on-surface mb-1">Aura Silk Blouse</h4>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-4">Size: S | Color: Champagne</p>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-center space-x-3 bg-surface-container-highest rounded-full px-3 py-1 border border-outline-variant">
+<button class="text-on-surface-variant hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
+<span class="font-body-base text-sm text-on-surface w-4 text-center">2</span>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+<p class="font-nav-link text-nav-link text-primary-container text-lg tracking-normal">$890</p>
+</div>
+</div>
+<button aria-label="Remove item" class="self-start text-on-surface-variant hover:text-error transition-colors mt-2">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Order Summary -->
+<div class="col-span-1 lg:col-span-5 relative mt-12 lg:mt-0">
+<div class="sticky top-32 glass-panel rounded-xl p-8 flex flex-col">
+<h3 class="font-card-headline text-card-headline text-primary-container mb-8 text-3xl">Order Summary</h3>
+<div class="space-y-4 flex-grow">
+<div class="flex justify-between items-center text-on-surface-variant font-body-base">
+<span class="">Subtotal (3 items)</span>
+<span class="text-on-surface font-nav-link tracking-normal">$3,030.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-base">
+<span class="">Shipping</span>
+<span class="text-on-surface font-nav-link tracking-normal">Complimentary</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-base">
+<span class="">Estimated Tax</span>
+<span class="text-on-surface font-nav-link tracking-normal">$242.40</span>
+</div>
+</div>
+<div class="border-t border-outline-variant mt-8 pt-6 mb-8">
+<div class="flex justify-between items-end">
+<span class="font-card-headline text-2xl text-on-surface">Total</span>
+<div class="text-right">
+<span class="block font-nav-link text-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">USD</span>
+<span class="font-card-headline text-4xl text-primary-container">$3,272.40</span>
+</div>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full bg-primary-container text-on-primary font-studio-playful text-studio-playful py-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg flex justify-center items-center gap-2 group rounded-full">
+<span class="">Continue to Payment</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="text-center font-label-caps text-[10px] text-on-surface-variant mt-6 uppercase tracking-widest opacity-60">Secure SSL Encrypted Checkout</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Atmospheric Effect -->
+<div class="fixed inset-0 z-[-1] pointer-events-none opacity-40 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-surface-container-highest via-background to-background"></div>
+
+
+
+
+</body></html>
