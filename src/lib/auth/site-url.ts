@@ -6,8 +6,11 @@ export function getSiteUrl() {
     return trimTrailingSlash(configuredUrl)
   }
 
-  if (typeof window !== "undefined" && window.location.origin) {
-    return trimTrailingSlash(window.location.origin)
+  const runtimeOrigin =
+    typeof globalThis.location?.origin === "string" ? globalThis.location.origin : null
+
+  if (runtimeOrigin) {
+    return trimTrailingSlash(runtimeOrigin)
   }
 
   return "http://localhost:3000"
