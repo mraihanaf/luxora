@@ -5,6 +5,7 @@ import { useCart } from "@/lib/cart/CartProvider";
 import { cn } from "@/lib/cn";
 import { formatIdr } from "@/lib/storefront";
 import type { StorefrontProduct } from "@/lib/types";
+import { useToast } from "@/components/ui/ToastProvider";
 
 export function ProductCard({
   product,
@@ -14,6 +15,7 @@ export function ProductCard({
   featured?: boolean;
 }) {
   const { add } = useCart();
+  const { pushToast } = useToast();
 
   return (
     <article className="group cursor-pointer">
@@ -32,7 +34,18 @@ export function ProductCard({
         <div className="absolute inset-0 flex flex-col justify-end p-6">
           <button
             type="button"
-            onClick={() => add(product.id, 1)}
+            onClick={() => {
+              const nextQty = add(product.id, 1);
+              pushToast({
+                title: "Added to wardrobe",
+                description:
+                  nextQty > 1
+                    ? `${product.name} now has quantity ${nextQty} in your wardrobe.`
+                    : `${product.name} is ready in your wardrobe.`,
+                actionLabel: "View Wardrobe",
+                href: "/cart",
+              });
+            }}
             className={cn(
               "w-full rounded-full border border-[color:var(--outline-variant)] bg-[color:var(--surface)] py-4",
               "text-[12px] uppercase tracking-[0.22em] text-[color:var(--on-surface)]",

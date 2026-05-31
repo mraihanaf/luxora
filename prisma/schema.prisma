@@ -41,7 +41,10 @@ model ProductVideo {
   productsHash   String                     @unique
   videoKey       String?
   videoId        String?
+  triggerRunId   String?
   workflowStatus ProductVideoWorkflowStatus @default(PENDING)
+  progressPercent Int                       @default(0)
+  progressLabel  String?
   errorMessage   String?
   createdAt      DateTime                   @default(now())
   updatedAt      DateTime                   @updatedAt

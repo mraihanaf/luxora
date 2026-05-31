@@ -91,7 +91,10 @@ export const ProductVideoScalarFieldEnum = {
   productsHash: 'productsHash',
   videoKey: 'videoKey',
   videoId: 'videoId',
+  triggerRunId: 'triggerRunId',
   workflowStatus: 'workflowStatus',
+  progressPercent: 'progressPercent',
+  progressLabel: 'progressLabel',
   errorMessage: 'errorMessage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

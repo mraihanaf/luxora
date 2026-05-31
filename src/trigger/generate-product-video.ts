@@ -1,4 +1,4 @@
-import { schemaTask, wait } from "@trigger.dev/sdk/v3"
+import { metadata, schemaTask, wait } from "@trigger.dev/sdk/v3"
 import { z } from "zod"
 import sharp from "sharp"
 import prisma from "@/lib/prisma"
@@ -66,6 +66,33 @@ const signRequiredObjectKey = async (key: string) => {
   return s3.getSignedUrl({ key, expiresIn: 3600 })
 }
 
+type WorkflowStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
+
+const updateWorkflowProgress = async (params: {
+  productVideoId: string
+  workflowStatus: WorkflowStatus
+  progressPercent: number
+  progressLabel: string
+  errorMessage?: string | null
+}) => {
+  metadata.replace({
+    workflowStatus: params.workflowStatus,
+    progressPercent: params.progressPercent,
+    progressLabel: params.progressLabel,
+  })
+  await metadata.flush()
+
+  await prisma.productVideo.update({
+    where: { id: params.productVideoId },
+    data: {
+      workflowStatus: params.workflowStatus,
+      progressPercent: params.progressPercent,
+      progressLabel: params.progressLabel,
+      errorMessage: params.errorMessage ?? null,
+    },
+  })
+}
+
 export const generateProductVideo = schemaTask({
   id: "generate-product-video",
   schema: z.object({
@@ -84,79 +111,158 @@ export const generateProductVideo = schemaTask({
       throw new Error("ProductVideo not found")
     }
 
-    if (productVideo.videoKey) {
-      return { videoUrl: await signRequiredObjectKey(productVideo.videoKey) }
-    }
+    let lastProgressLabel = productVideo.progressLabel ?? "Queued render"
 
-    const avatarBytes = await downloadImageToBuffer(AVATAR_IMAGE_URL)
-    const avatarUpload = await pixverse.uploadImageFromBuffer({
-      bytes: avatarBytes,
-      filename: "avatar-model.png",
-      contentType: "image/png",
-    })
-
-    const sortedProducts = [...productVideo.products].sort((a, b) => a.type.localeCompare(b.type))
-    const outfitUrls = await Promise.all(sortedProducts.map((p) => signRequiredObjectKey(p.imageKey)))
-    const outfitImageBytes = await buildOutfitReferenceImage(outfitUrls)
-    const outfitUpload = await pixverse.uploadImageFromBuffer({
-      bytes: outfitImageBytes,
-      filename: "outfit.png",
-      contentType: "image/png",
-    })
-
-    const prompt = `@model wearing @outfit ${lookbookPrompt}`
-
-    const fusion = await pixverse.generateFusionVideo({
-      imageReferences: [
-        { type: "subject", imgId: avatarUpload.imgId, refName: "model" },
-        { type: "subject", imgId: outfitUpload.imgId, refName: "outfit" },
-      ],
-      prompt,
-      model: "v6",
-      duration: 10,
-      quality: "1080p",
-      aspectRatio: "9:16",
-    })
-
-    let pixverseUrl: string | undefined
-    for (let attempt = 0; attempt < 300; attempt++) {
-      const result = await pixverse.getVideoResult(fusion.videoId)
-      if (result.status === 1 && result.url) {
-        pixverseUrl = result.url
-        break
+    try {
+      if (productVideo.videoKey) {
+        await updateWorkflowProgress({
+          productVideoId: productVideo.id,
+          workflowStatus: "COMPLETED",
+          progressPercent: 100,
+          progressLabel: "Render complete",
+        })
+        return { videoUrl: await signRequiredObjectKey(productVideo.videoKey) }
       }
-      if (result.status === 7) {
-        throw new Error("PixVerse moderation failed")
+
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "PROCESSING",
+        progressPercent: 15,
+        progressLabel: "Preparing model assets",
+      })
+      lastProgressLabel = "Preparing model assets"
+
+      const avatarBytes = await downloadImageToBuffer(AVATAR_IMAGE_URL)
+
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "PROCESSING",
+        progressPercent: 30,
+        progressLabel: "Composing outfit reference",
+      })
+      lastProgressLabel = "Composing outfit reference"
+
+      const sortedProducts = [...productVideo.products].sort((a, b) => a.type.localeCompare(b.type))
+      const outfitUrls = await Promise.all(sortedProducts.map((p) => signRequiredObjectKey(p.imageKey)))
+      const outfitImageBytes = await buildOutfitReferenceImage(outfitUrls)
+
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "PROCESSING",
+        progressPercent: 45,
+        progressLabel: "Uploading references",
+      })
+      lastProgressLabel = "Uploading references"
+
+      const avatarUpload = await pixverse.uploadImageFromBuffer({
+        bytes: avatarBytes,
+        filename: "avatar-model.png",
+        contentType: "image/png",
+      })
+      const outfitUpload = await pixverse.uploadImageFromBuffer({
+        bytes: outfitImageBytes,
+        filename: "outfit.png",
+        contentType: "image/png",
+      })
+
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "PROCESSING",
+        progressPercent: 60,
+        progressLabel: "Starting video render",
+      })
+      lastProgressLabel = "Starting video render"
+
+      const prompt = `@model wearing @outfit ${lookbookPrompt}`
+
+      const fusion = await pixverse.generateFusionVideo({
+        imageReferences: [
+          { type: "subject", imgId: avatarUpload.imgId, refName: "model" },
+          { type: "subject", imgId: outfitUpload.imgId, refName: "outfit" },
+        ],
+        prompt,
+        model: "v6",
+        duration: 10,
+        quality: "1080p",
+        aspectRatio: "9:16",
+      })
+
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "PROCESSING",
+        progressPercent: 75,
+        progressLabel: "Waiting for PixVerse result",
+      })
+      lastProgressLabel = "Waiting for PixVerse result"
+
+      let pixverseUrl: string | undefined
+      for (let attempt = 0; attempt < 300; attempt++) {
+        const result = await pixverse.getVideoResult(fusion.videoId)
+        if (result.status === 1 && result.url) {
+          pixverseUrl = result.url
+          break
+        }
+        if (result.status === 7) {
+          throw new Error("PixVerse moderation failed")
+        }
+        if (result.status === 8) {
+          throw new Error("PixVerse generation failed")
+        }
+        await wait.for({ seconds: 6 })
       }
-      if (result.status === 8) {
-        throw new Error("PixVerse generation failed")
+
+      if (!pixverseUrl) {
+        throw new Error("Timed out waiting for PixVerse video")
       }
-      await wait.for({ seconds: 6 })
+
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "PROCESSING",
+        progressPercent: 90,
+        progressLabel: "Uploading final video",
+      })
+      lastProgressLabel = "Uploading final video"
+
+      const videoBytes = await s3.downloadUrlToBuffer(pixverseUrl)
+      const key = `product-videos/${productVideo.productsHash}.mp4`
+      const videoKey = await s3.uploadObject({
+        key,
+        body: videoBytes,
+        contentType: "video/mp4",
+      })
+
+      const updated = await prisma.productVideo.update({
+        where: { id: productVideo.id },
+        data: {
+          videoKey,
+          videoId: String(fusion.videoId),
+          workflowStatus: "COMPLETED",
+          progressPercent: 100,
+          progressLabel: "Render complete",
+          errorMessage: null,
+        },
+        select: {
+          videoKey: true,
+        },
+      })
+
+      metadata.replace({
+        workflowStatus: "COMPLETED",
+        progressPercent: 100,
+        progressLabel: "Render complete",
+      })
+      await metadata.flush()
+
+      return { videoUrl: await signRequiredObjectKey(updated.videoKey!) }
+    } catch (error) {
+      await updateWorkflowProgress({
+        productVideoId: productVideo.id,
+        workflowStatus: "FAILED",
+        progressPercent: Math.min(99, Math.max(productVideo.progressPercent, 15)),
+        progressLabel: lastProgressLabel || "Render failed",
+        errorMessage: error instanceof Error ? error.message : "Render failed",
+      })
+      throw error
     }
-
-    if (!pixverseUrl) {
-      throw new Error("Timed out waiting for PixVerse video")
-    }
-
-    const videoBytes = await s3.downloadUrlToBuffer(pixverseUrl)
-    const key = `product-videos/${productVideo.productsHash}.mp4`
-    const videoKey = await s3.uploadObject({
-      key,
-      body: videoBytes,
-      contentType: "video/mp4",
-    })
-
-    const updated = await prisma.productVideo.update({
-      where: { id: productVideo.id },
-      data: {
-        videoKey,
-        videoId: String(fusion.videoId),
-      },
-      select: {
-        videoKey: true,
-      },
-    })
-
-    return { videoUrl: await signRequiredObjectKey(updated.videoKey!) }
   },
 })

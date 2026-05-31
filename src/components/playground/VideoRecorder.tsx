@@ -1,26 +1,41 @@
 "use client";
 
 import { productTypeLabels } from "@/lib/storefront";
-import type { StorefrontProduct, StorefrontProductVideo } from "@/lib/types";
+import type {
+  StorefrontProduct,
+  StorefrontProductVideo,
+  StorefrontProductVideoStatus,
+} from "@/lib/types";
 
 export function VideoRecorder({
   picks,
   video,
   isStarting,
   isPolling,
+  workflowStatus,
+  progressPercent,
+  progressLabel,
+  realtimeState,
   error,
 }: {
   picks: StorefrontProduct[]
   video: StorefrontProductVideo | null
   isStarting: boolean
   isPolling: boolean
+  workflowStatus: StorefrontProductVideoStatus | null
+  progressPercent: number
+  progressLabel: string | null
+  realtimeState: "idle" | "connecting" | "live" | "waiting" | "offline"
   error: string | null
 }) {
   const hasSelection = picks.length > 0
+  const activeProgress = Math.min(100, Math.max(0, progressPercent))
   const status = error
     ? "Error"
     : video?.videoUrl
       ? "Ready"
+      : workflowStatus === "FAILED"
+        ? "Failed"
       : isStarting
         ? "Starting"
         : isPolling
@@ -28,6 +43,14 @@ export function VideoRecorder({
           : hasSelection
             ? "Awaiting launch"
             : "Select products"
+  const realtimeLabel =
+    realtimeState === "live"
+      ? "Live updates"
+      : realtimeState === "connecting"
+        ? "Connecting live feed"
+        : realtimeState === "offline"
+          ? "Realtime unavailable"
+          : null
 
   return (
     <div className="glass-card p-6">
@@ -73,9 +96,55 @@ export function VideoRecorder({
         </div>
       </div>
 
+      {hasSelection ? (
+        <div className="mt-6 rounded-2xl border border-[color:var(--glass-border)] bg-[color:var(--glass-surface)] p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
+                Render progress
+              </div>
+              <div className="mt-2 text-[15px] text-[color:var(--text-primary)]">
+                {progressLabel ??
+                  (workflowStatus === "FAILED"
+                    ? "Render failed"
+                    : video?.videoUrl
+                      ? "Render complete"
+                      : "Waiting to start")}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="font-[family-name:var(--font-display)] text-[28px] leading-none text-[color:var(--text-primary)]">
+                {video?.videoUrl ? 100 : activeProgress}%
+              </div>
+              {realtimeLabel ? (
+                <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-secondary)]">
+                  {realtimeLabel}
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[color:var(--surface-container-low)]">
+            <div
+              className="h-full rounded-full bg-[color:var(--text-primary)] transition-[width] duration-500 ease-out"
+              style={{ width: `${video?.videoUrl ? 100 : activeProgress}%` }}
+            />
+          </div>
+          <div className="mt-3 text-[13px] leading-[1.7] text-[color:var(--text-secondary)]">
+            {error
+              ? "The render stopped before completion. Keep this outfit selected and run it again."
+              : video?.videoUrl
+                ? "The lookbook is ready and the preview below loops automatically."
+                : "We keep polling as a fallback while realtime updates stream the current stage."}
+          </div>
+        </div>
+      ) : null}
+
       {error ? (
         <div className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-[13px] text-[color:var(--text-primary)]">
-          {error}
+          <div>{error}</div>
+          <div className="mt-2 text-[color:var(--text-secondary)]">
+            Retry with the current outfit selection to start a fresh render.
+          </div>
         </div>
       ) : null}
 
@@ -104,7 +173,9 @@ export function VideoRecorder({
             </div>
           ) : (
             <div className="mt-4 rounded-2xl border border-dashed border-[color:var(--glass-border)] p-8 text-center text-[14px] text-[color:var(--text-secondary)]">
-              Render in progress. This panel refreshes automatically when the workflow completes.
+              {progressLabel
+                ? `${progressLabel}. This panel refreshes automatically as the workflow advances.`
+                : "Render in progress. This panel refreshes automatically when the workflow completes."}
             </div>
           )}
         </div>

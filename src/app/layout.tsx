@@ -8,6 +8,7 @@ import { LuxoraCursor } from "@/components/fx/LuxoraCursor";
 import { LuxoraNav } from "@/components/nav/LuxoraNav";
 import { LuxoraFooter } from "@/components/nav/LuxoraFooter";
 import Providers from "@/components/providers";
+import { ToastProvider } from "@/components/ui/ToastProvider";
 
 const luxoraUi = Geist({
   variable: "--font-luxora-ui",
@@ -62,16 +63,18 @@ export default function RootLayout({
         </a>
         <Providers>
           <ThemeProvider>
-            <CartProvider>
-              <div className="luxora-shell luxora-noise flex min-h-full flex-col">
-                <LuxoraCursor />
-                <LuxoraNav />
-                <main id="main" tabIndex={-1} className="flex-1 pt-24">
-                  {children}
-                </main>
-                <LuxoraFooter />
-              </div>
-            </CartProvider>
+            <ToastProvider>
+              <CartProvider>
+                <div className="luxora-shell luxora-noise flex min-h-full flex-col">
+                  <LuxoraCursor />
+                  <LuxoraNav />
+                  <main id="main" tabIndex={-1} className="flex-1 pt-24">
+                    {children}
+                  </main>
+                  <LuxoraFooter />
+                </div>
+              </CartProvider>
+            </ToastProvider>
           </ThemeProvider>
         </Providers>
       </body>

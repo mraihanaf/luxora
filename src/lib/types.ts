@@ -18,7 +18,10 @@ export type StorefrontProductVideo = {
   videoKey: string | null;
   videoUrl: string | null;
   videoId: string | null;
+  triggerRunId: string | null;
   workflowStatus: StorefrontProductVideoStatus;
+  progressPercent: number;
+  progressLabel: string | null;
   errorMessage: string | null;
   createdAt: string | Date;
   updatedAt: string | Date;

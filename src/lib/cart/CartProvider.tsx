@@ -6,7 +6,7 @@ import type { CartLine } from "@/lib/types";
 type CartContextValue = {
   lines: CartLine[];
   totalQty: number;
-  add: (productId: string, qty?: number) => void;
+  add: (productId: string, qty?: number) => number;
   remove: (productId: string) => void;
   setQty: (productId: string, qty: number) => void;
   clear: () => void;
@@ -21,7 +21,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const totalQty = lines.reduce((sum, l) => sum + l.qty, 0);
 
     const add: CartContextValue["add"] = (productId, qty = 1) => {
-      if (!Number.isFinite(qty) || qty <= 0) return;
+      if (!Number.isFinite(qty) || qty <= 0) return 0;
+      const currentQty = lines.find((line) => line.productId === productId)?.qty ?? 0;
+      const nextQty = currentQty + qty;
       setLines((prev) => {
         const next = [...prev];
         const i = next.findIndex((l) => l.productId === productId);
@@ -29,6 +31,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         else next.push({ productId, qty });
         return next;
       });
+      return nextQty;
     };
 
     const remove: CartContextValue["remove"] = (productId) => {
@@ -59,4 +62,3 @@ export function useCart() {
   if (!ctx) throw new Error("useCart must be used within CartProvider");
   return ctx;
 }
-

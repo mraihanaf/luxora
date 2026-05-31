@@ -2,17 +2,22 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { useCart } from "@/lib/cart/CartProvider";
 import { emptyOutfit } from "@/lib/outfit/outfitSlots";
-import type { Outfit, StorefrontProduct } from "@/lib/types";
+import type { Outfit, StorefrontProduct, StorefrontProductVideoStatus } from "@/lib/types";
 import { OutfitBuilder } from "@/components/playground/OutfitBuilder";
 import { OutfitStage } from "@/components/playground/OutfitStage";
 import { VideoRecorder } from "@/components/playground/VideoRecorder";
 import orpc from "@/lib/orpc/client";
+import type { generateProductVideo } from "@/trigger/generate-product-video";
+
+const clampProgress = (value: number) => Math.min(100, Math.max(0, Math.round(value)));
 
 export default function PlaygroundPage() {
   const { lines } = useCart();
+  const queryClient = useQueryClient();
   const listQuery = useQuery(orpc.listProducts.queryOptions());
   const authQuery = useQuery({
     ...orpc.getMe.queryOptions(),
@@ -51,15 +56,69 @@ export default function PlaygroundPage() {
     }),
   );
 
+  const productVideoQueryOptions = orpc.getProductVideo.queryOptions({
+    input: { productsHash: productsHash ?? "" },
+  });
   const videoQuery = useQuery({
-    ...orpc.getProductVideo.queryOptions({
-      input: { productsHash: productsHash ?? "" },
-    }),
+    ...productVideoQueryOptions,
     enabled: Boolean(productsHash),
-    refetchInterval: (query) => (query.state.data?.videoUrl ? false : 3000),
+    refetchInterval: (query) =>
+      query.state.data?.videoUrl || query.state.data?.workflowStatus === "FAILED" ? false : 3000,
   });
 
   const displayedVideo = videoQuery.data ?? generateMutation.data ?? null;
+  const realtimeSessionQuery = useQuery({
+    ...orpc.getProductVideoRealtimeSession.queryOptions({
+      input: { productsHash: productsHash ?? "" },
+    }),
+    enabled: Boolean(
+      productsHash &&
+        displayedVideo?.triggerRunId &&
+        !displayedVideo.videoUrl &&
+        displayedVideo.workflowStatus !== "FAILED",
+    ),
+    retry: false,
+    staleTime: 45 * 60 * 1000,
+  });
+  const realtimeRun = useRealtimeRun<typeof generateProductVideo>(realtimeSessionQuery.data?.runId, {
+    accessToken: realtimeSessionQuery.data?.accessToken,
+    enabled: Boolean(realtimeSessionQuery.data?.runId && realtimeSessionQuery.data?.accessToken),
+    onComplete: () => {
+      void queryClient.invalidateQueries({ queryKey: productVideoQueryOptions.queryKey });
+    },
+  });
+
+  const realtimeMetadata = realtimeRun.run?.metadata as
+    | {
+        progressPercent?: number;
+        progressLabel?: string;
+        workflowStatus?: StorefrontProductVideoStatus;
+      }
+    | undefined;
+
+  const workflowStatus =
+    realtimeMetadata?.workflowStatus ??
+    displayedVideo?.workflowStatus ??
+    (generateMutation.isPending ? "PENDING" : undefined);
+  const progressPercent =
+    typeof realtimeMetadata?.progressPercent === "number"
+      ? clampProgress(realtimeMetadata.progressPercent)
+      : displayedVideo?.progressPercent ??
+        (generateMutation.isPending ? 5 : selectedIds.length ? 0 : 0);
+  const progressLabel =
+    realtimeMetadata?.progressLabel ??
+    displayedVideo?.progressLabel ??
+    (generateMutation.isPending ? "Queued render" : null);
+  const realtimeState =
+    !productsHash || displayedVideo?.videoUrl || workflowStatus === "FAILED"
+      ? "idle"
+      : realtimeRun.error
+        ? "offline"
+        : realtimeRun.run
+          ? "live"
+          : realtimeSessionQuery.isLoading
+            ? "connecting"
+            : "waiting";
   const workflowError = generateMutation.error?.message ?? videoQuery.error?.message ?? null;
 
   const updateOutfit = (next: Outfit) => {
@@ -152,6 +211,10 @@ export default function PlaygroundPage() {
               video={displayedVideo}
               isStarting={generateMutation.isPending}
               isPolling={Boolean(productsHash) && !displayedVideo?.videoUrl}
+              workflowStatus={workflowStatus ?? null}
+              progressPercent={progressPercent}
+              progressLabel={progressLabel}
+              realtimeState={realtimeState}
               error={workflowError}
             />
           </section>

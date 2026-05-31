@@ -20,8 +20,18 @@ export type ProductVideoModel = runtime.Types.Result.DefaultSelection<Prisma.$Pr
 
 export type AggregateProductVideo = {
   _count: ProductVideoCountAggregateOutputType | null
+  _avg: ProductVideoAvgAggregateOutputType | null
+  _sum: ProductVideoSumAggregateOutputType | null
   _min: ProductVideoMinAggregateOutputType | null
   _max: ProductVideoMaxAggregateOutputType | null
+}
+
+export type ProductVideoAvgAggregateOutputType = {
+  progressPercent: number | null
+}
+
+export type ProductVideoSumAggregateOutputType = {
+  progressPercent: number | null
 }
 
 export type ProductVideoMinAggregateOutputType = {
@@ -29,7 +39,10 @@ export type ProductVideoMinAggregateOutputType = {
   productsHash: string | null
   videoKey: string | null
   videoId: string | null
+  triggerRunId: string | null
   workflowStatus: $Enums.ProductVideoWorkflowStatus | null
+  progressPercent: number | null
+  progressLabel: string | null
   errorMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -40,7 +53,10 @@ export type ProductVideoMaxAggregateOutputType = {
   productsHash: string | null
   videoKey: string | null
   videoId: string | null
+  triggerRunId: string | null
   workflowStatus: $Enums.ProductVideoWorkflowStatus | null
+  progressPercent: number | null
+  progressLabel: string | null
   errorMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,7 +67,10 @@ export type ProductVideoCountAggregateOutputType = {
   productsHash: number
   videoKey: number
   videoId: number
+  triggerRunId: number
   workflowStatus: number
+  progressPercent: number
+  progressLabel: number
   errorMessage: number
   createdAt: number
   updatedAt: number
@@ -59,12 +78,23 @@ export type ProductVideoCountAggregateOutputType = {
 }
 
 
+export type ProductVideoAvgAggregateInputType = {
+  progressPercent?: true
+}
+
+export type ProductVideoSumAggregateInputType = {
+  progressPercent?: true
+}
+
 export type ProductVideoMinAggregateInputType = {
   id?: true
   productsHash?: true
   videoKey?: true
   videoId?: true
+  triggerRunId?: true
   workflowStatus?: true
+  progressPercent?: true
+  progressLabel?: true
   errorMessage?: true
   createdAt?: true
   updatedAt?: true
@@ -75,7 +105,10 @@ export type ProductVideoMaxAggregateInputType = {
   productsHash?: true
   videoKey?: true
   videoId?: true
+  triggerRunId?: true
   workflowStatus?: true
+  progressPercent?: true
+  progressLabel?: true
   errorMessage?: true
   createdAt?: true
   updatedAt?: true
@@ -86,7 +119,10 @@ export type ProductVideoCountAggregateInputType = {
   productsHash?: true
   videoKey?: true
   videoId?: true
+  triggerRunId?: true
   workflowStatus?: true
+  progressPercent?: true
+  progressLabel?: true
   errorMessage?: true
   createdAt?: true
   updatedAt?: true
@@ -131,6 +167,18 @@ export type ProductVideoAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ProductVideoAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ProductVideoSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ProductVideoMinAggregateInputType
@@ -161,6 +209,8 @@ export type ProductVideoGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: ProductVideoCountAggregateInputType | true
+  _avg?: ProductVideoAvgAggregateInputType
+  _sum?: ProductVideoSumAggregateInputType
   _min?: ProductVideoMinAggregateInputType
   _max?: ProductVideoMaxAggregateInputType
 }
@@ -170,11 +220,16 @@ export type ProductVideoGroupByOutputType = {
   productsHash: string
   videoKey: string | null
   videoId: string | null
+  triggerRunId: string | null
   workflowStatus: $Enums.ProductVideoWorkflowStatus
+  progressPercent: number
+  progressLabel: string | null
   errorMessage: string | null
   createdAt: Date
   updatedAt: Date
   _count: ProductVideoCountAggregateOutputType | null
+  _avg: ProductVideoAvgAggregateOutputType | null
+  _sum: ProductVideoSumAggregateOutputType | null
   _min: ProductVideoMinAggregateOutputType | null
   _max: ProductVideoMaxAggregateOutputType | null
 }
@@ -202,7 +257,10 @@ export type ProductVideoWhereInput = {
   productsHash?: Prisma.StringFilter<"ProductVideo"> | string
   videoKey?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
+  triggerRunId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFilter<"ProductVideo"> | number
+  progressLabel?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   errorMessage?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
@@ -214,7 +272,10 @@ export type ProductVideoOrderByWithRelationInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   videoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  triggerRunId?: Prisma.SortOrderInput | Prisma.SortOrder
   workflowStatus?: Prisma.SortOrder
+  progressPercent?: Prisma.SortOrder
+  progressLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -229,7 +290,10 @@ export type ProductVideoWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProductVideoWhereInput | Prisma.ProductVideoWhereInput[]
   videoKey?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
+  triggerRunId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFilter<"ProductVideo"> | number
+  progressLabel?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   errorMessage?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
@@ -241,13 +305,18 @@ export type ProductVideoOrderByWithAggregationInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   videoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  triggerRunId?: Prisma.SortOrderInput | Prisma.SortOrder
   workflowStatus?: Prisma.SortOrder
+  progressPercent?: Prisma.SortOrder
+  progressLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProductVideoCountOrderByAggregateInput
+  _avg?: Prisma.ProductVideoAvgOrderByAggregateInput
   _max?: Prisma.ProductVideoMaxOrderByAggregateInput
   _min?: Prisma.ProductVideoMinOrderByAggregateInput
+  _sum?: Prisma.ProductVideoSumOrderByAggregateInput
 }
 
 export type ProductVideoScalarWhereWithAggregatesInput = {
@@ -258,7 +327,10 @@ export type ProductVideoScalarWhereWithAggregatesInput = {
   productsHash?: Prisma.StringWithAggregatesFilter<"ProductVideo"> | string
   videoKey?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
+  triggerRunId?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusWithAggregatesFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntWithAggregatesFilter<"ProductVideo"> | number
+  progressLabel?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
   errorMessage?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ProductVideo"> | Date | string
@@ -269,7 +341,10 @@ export type ProductVideoCreateInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  triggerRunId?: string | null
   workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  progressPercent?: number
+  progressLabel?: string | null
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -281,7 +356,10 @@ export type ProductVideoUncheckedCreateInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  triggerRunId?: string | null
   workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  progressPercent?: number
+  progressLabel?: string | null
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -293,7 +371,10 @@ export type ProductVideoUpdateInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -305,7 +386,10 @@ export type ProductVideoUncheckedUpdateInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,7 +401,10 @@ export type ProductVideoCreateManyInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  triggerRunId?: string | null
   workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  progressPercent?: number
+  progressLabel?: string | null
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -328,7 +415,10 @@ export type ProductVideoUpdateManyMutationInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -339,7 +429,10 @@ export type ProductVideoUncheckedUpdateManyInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,10 +453,17 @@ export type ProductVideoCountOrderByAggregateInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrder
   videoId?: Prisma.SortOrder
+  triggerRunId?: Prisma.SortOrder
   workflowStatus?: Prisma.SortOrder
+  progressPercent?: Prisma.SortOrder
+  progressLabel?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ProductVideoAvgOrderByAggregateInput = {
+  progressPercent?: Prisma.SortOrder
 }
 
 export type ProductVideoMaxOrderByAggregateInput = {
@@ -371,7 +471,10 @@ export type ProductVideoMaxOrderByAggregateInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrder
   videoId?: Prisma.SortOrder
+  triggerRunId?: Prisma.SortOrder
   workflowStatus?: Prisma.SortOrder
+  progressPercent?: Prisma.SortOrder
+  progressLabel?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -382,10 +485,17 @@ export type ProductVideoMinOrderByAggregateInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrder
   videoId?: Prisma.SortOrder
+  triggerRunId?: Prisma.SortOrder
   workflowStatus?: Prisma.SortOrder
+  progressPercent?: Prisma.SortOrder
+  progressLabel?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ProductVideoSumOrderByAggregateInput = {
+  progressPercent?: Prisma.SortOrder
 }
 
 export type ProductVideoCreateNestedManyWithoutProductsInput = {
@@ -435,7 +545,10 @@ export type ProductVideoCreateWithoutProductsInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  triggerRunId?: string | null
   workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  progressPercent?: number
+  progressLabel?: string | null
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -446,7 +559,10 @@ export type ProductVideoUncheckedCreateWithoutProductsInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  triggerRunId?: string | null
   workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  progressPercent?: number
+  progressLabel?: string | null
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -481,7 +597,10 @@ export type ProductVideoScalarWhereInput = {
   productsHash?: Prisma.StringFilter<"ProductVideo"> | string
   videoKey?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
+  triggerRunId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFilter<"ProductVideo"> | number
+  progressLabel?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   errorMessage?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
@@ -492,7 +611,10 @@ export type ProductVideoUpdateWithoutProductsInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -503,7 +625,10 @@ export type ProductVideoUncheckedUpdateWithoutProductsInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -514,7 +639,10 @@ export type ProductVideoUncheckedUpdateManyWithoutProductsInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  triggerRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  progressPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  progressLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -556,7 +684,10 @@ export type ProductVideoSelect<ExtArgs extends runtime.Types.Extensions.Internal
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  triggerRunId?: boolean
   workflowStatus?: boolean
+  progressPercent?: boolean
+  progressLabel?: boolean
   errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -569,7 +700,10 @@ export type ProductVideoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  triggerRunId?: boolean
   workflowStatus?: boolean
+  progressPercent?: boolean
+  progressLabel?: boolean
   errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -580,7 +714,10 @@ export type ProductVideoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  triggerRunId?: boolean
   workflowStatus?: boolean
+  progressPercent?: boolean
+  progressLabel?: boolean
   errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -591,13 +728,16 @@ export type ProductVideoSelectScalar = {
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  triggerRunId?: boolean
   workflowStatus?: boolean
+  progressPercent?: boolean
+  progressLabel?: boolean
   errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductVideoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productsHash" | "videoKey" | "videoId" | "workflowStatus" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["productVideo"]>
+export type ProductVideoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productsHash" | "videoKey" | "videoId" | "triggerRunId" | "workflowStatus" | "progressPercent" | "progressLabel" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["productVideo"]>
 export type ProductVideoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | Prisma.ProductVideo$productsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductVideoCountOutputTypeDefaultArgs<ExtArgs>
@@ -615,7 +755,10 @@ export type $ProductVideoPayload<ExtArgs extends runtime.Types.Extensions.Intern
     productsHash: string
     videoKey: string | null
     videoId: string | null
+    triggerRunId: string | null
     workflowStatus: $Enums.ProductVideoWorkflowStatus
+    progressPercent: number
+    progressLabel: string | null
     errorMessage: string | null
     createdAt: Date
     updatedAt: Date
@@ -1047,7 +1190,10 @@ export interface ProductVideoFieldRefs {
   readonly productsHash: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly videoKey: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly videoId: Prisma.FieldRef<"ProductVideo", 'String'>
+  readonly triggerRunId: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly workflowStatus: Prisma.FieldRef<"ProductVideo", 'ProductVideoWorkflowStatus'>
+  readonly progressPercent: Prisma.FieldRef<"ProductVideo", 'Int'>
+  readonly progressLabel: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly errorMessage: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly createdAt: Prisma.FieldRef<"ProductVideo", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ProductVideo", 'DateTime'>
