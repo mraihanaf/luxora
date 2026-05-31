@@ -4,7 +4,6 @@ import sharp from "sharp"
 import prisma from "@/lib/prisma"
 import { pixverse } from "@/lib/pixverse"
 import { s3 } from "@/lib/s3"
-import { createAdminClient } from "@/lib/supabase/admin"
 
 const lookbookPrompt = `A fashion lookbook style video. They poses in a minimalist studio with a solid light green background. The camera begins with a medium shot of her raising her hand gracefully, then cuts to dynamic close-up macro shots highlighting the texture of the fabric. and finishes with a full-body wide shot of her standing casually with her hands in her pockets. Professional, bright studio lighting with soft shadows`
 const AVATAR_IMAGE_URL =
@@ -63,24 +62,8 @@ const buildOutfitReferenceImage = async (imageUrls: string[]) => {
   return new Uint8Array(buffer)
 }
 
-const SIGNED_URL_TTL_SECONDS = 60 * 60
-
-const getBucket = () => {
-  const bucket = process.env.STORAGE_BUCKET
-  if (!bucket) {
-    throw new Error("STORAGE_BUCKET is not set")
-  }
-  return bucket
-}
-
 const signRequiredObjectKey = async (key: string) => {
-  const admin = createAdminClient()
-  const bucket = getBucket()
-  const { data, error } = await admin.storage.from(bucket).createSignedUrl(key, SIGNED_URL_TTL_SECONDS)
-  if (error || !data?.signedUrl) {
-    throw new Error(error?.message ?? "Failed to sign url")
-  }
-  return data.signedUrl
+  return s3.getSignedUrl({ key, expiresIn: 3600 })
 }
 
 export const generateProductVideo = schemaTask({
@@ -148,7 +131,7 @@ export const generateProductVideo = schemaTask({
       if (result.status === 8) {
         throw new Error("PixVerse generation failed")
       }
-      await wait.for({ seconds: 3 })
+      await wait.for({ seconds: 6 })
     }
 
     if (!pixverseUrl) {

@@ -29,6 +29,8 @@ export type ProductVideoMinAggregateOutputType = {
   productsHash: string | null
   videoKey: string | null
   videoId: string | null
+  workflowStatus: $Enums.ProductVideoWorkflowStatus | null
+  errorMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +40,8 @@ export type ProductVideoMaxAggregateOutputType = {
   productsHash: string | null
   videoKey: string | null
   videoId: string | null
+  workflowStatus: $Enums.ProductVideoWorkflowStatus | null
+  errorMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +51,8 @@ export type ProductVideoCountAggregateOutputType = {
   productsHash: number
   videoKey: number
   videoId: number
+  workflowStatus: number
+  errorMessage: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +64,8 @@ export type ProductVideoMinAggregateInputType = {
   productsHash?: true
   videoKey?: true
   videoId?: true
+  workflowStatus?: true
+  errorMessage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +75,8 @@ export type ProductVideoMaxAggregateInputType = {
   productsHash?: true
   videoKey?: true
   videoId?: true
+  workflowStatus?: true
+  errorMessage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +86,8 @@ export type ProductVideoCountAggregateInputType = {
   productsHash?: true
   videoKey?: true
   videoId?: true
+  workflowStatus?: true
+  errorMessage?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +170,8 @@ export type ProductVideoGroupByOutputType = {
   productsHash: string
   videoKey: string | null
   videoId: string | null
+  workflowStatus: $Enums.ProductVideoWorkflowStatus
+  errorMessage: string | null
   createdAt: Date
   updatedAt: Date
   _count: ProductVideoCountAggregateOutputType | null
@@ -188,6 +202,8 @@ export type ProductVideoWhereInput = {
   productsHash?: Prisma.StringFilter<"ProductVideo"> | string
   videoKey?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   products?: Prisma.ProductListRelationFilter
@@ -198,6 +214,8 @@ export type ProductVideoOrderByWithRelationInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   videoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  workflowStatus?: Prisma.SortOrder
+  errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   products?: Prisma.ProductOrderByRelationAggregateInput
@@ -211,6 +229,8 @@ export type ProductVideoWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProductVideoWhereInput | Prisma.ProductVideoWhereInput[]
   videoKey?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   products?: Prisma.ProductListRelationFilter
@@ -221,6 +241,8 @@ export type ProductVideoOrderByWithAggregationInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrderInput | Prisma.SortOrder
   videoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  workflowStatus?: Prisma.SortOrder
+  errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProductVideoCountOrderByAggregateInput
@@ -236,6 +258,8 @@ export type ProductVideoScalarWhereWithAggregatesInput = {
   productsHash?: Prisma.StringWithAggregatesFilter<"ProductVideo"> | string
   videoKey?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusWithAggregatesFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.StringNullableWithAggregatesFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ProductVideo"> | Date | string
 }
@@ -245,6 +269,8 @@ export type ProductVideoCreateInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   products?: Prisma.ProductCreateNestedManyWithoutProductVideosInput
@@ -255,6 +281,8 @@ export type ProductVideoUncheckedCreateInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutProductVideosInput
@@ -265,6 +293,8 @@ export type ProductVideoUpdateInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUpdateManyWithoutProductVideosNestedInput
@@ -275,6 +305,8 @@ export type ProductVideoUncheckedUpdateInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUncheckedUpdateManyWithoutProductVideosNestedInput
@@ -285,6 +317,8 @@ export type ProductVideoCreateManyInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -294,6 +328,8 @@ export type ProductVideoUpdateManyMutationInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -303,6 +339,8 @@ export type ProductVideoUncheckedUpdateManyInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -322,6 +360,8 @@ export type ProductVideoCountOrderByAggregateInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrder
   videoId?: Prisma.SortOrder
+  workflowStatus?: Prisma.SortOrder
+  errorMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -331,6 +371,8 @@ export type ProductVideoMaxOrderByAggregateInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrder
   videoId?: Prisma.SortOrder
+  workflowStatus?: Prisma.SortOrder
+  errorMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -340,6 +382,8 @@ export type ProductVideoMinOrderByAggregateInput = {
   productsHash?: Prisma.SortOrder
   videoKey?: Prisma.SortOrder
   videoId?: Prisma.SortOrder
+  workflowStatus?: Prisma.SortOrder
+  errorMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -382,11 +426,17 @@ export type ProductVideoUncheckedUpdateManyWithoutProductsNestedInput = {
   deleteMany?: Prisma.ProductVideoScalarWhereInput | Prisma.ProductVideoScalarWhereInput[]
 }
 
+export type EnumProductVideoWorkflowStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ProductVideoWorkflowStatus
+}
+
 export type ProductVideoCreateWithoutProductsInput = {
   id?: string
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -396,6 +446,8 @@ export type ProductVideoUncheckedCreateWithoutProductsInput = {
   productsHash: string
   videoKey?: string | null
   videoId?: string | null
+  workflowStatus?: $Enums.ProductVideoWorkflowStatus
+  errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -429,6 +481,8 @@ export type ProductVideoScalarWhereInput = {
   productsHash?: Prisma.StringFilter<"ProductVideo"> | string
   videoKey?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   videoId?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFilter<"ProductVideo"> | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.StringNullableFilter<"ProductVideo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProductVideo"> | Date | string
 }
@@ -438,6 +492,8 @@ export type ProductVideoUpdateWithoutProductsInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -447,6 +503,8 @@ export type ProductVideoUncheckedUpdateWithoutProductsInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -456,6 +514,8 @@ export type ProductVideoUncheckedUpdateManyWithoutProductsInput = {
   productsHash?: Prisma.StringFieldUpdateOperationsInput | string
   videoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumProductVideoWorkflowStatusFieldUpdateOperationsInput | $Enums.ProductVideoWorkflowStatus
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -496,6 +556,8 @@ export type ProductVideoSelect<ExtArgs extends runtime.Types.Extensions.Internal
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  workflowStatus?: boolean
+  errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   products?: boolean | Prisma.ProductVideo$productsArgs<ExtArgs>
@@ -507,6 +569,8 @@ export type ProductVideoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  workflowStatus?: boolean
+  errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["productVideo"]>
@@ -516,6 +580,8 @@ export type ProductVideoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  workflowStatus?: boolean
+  errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["productVideo"]>
@@ -525,11 +591,13 @@ export type ProductVideoSelectScalar = {
   productsHash?: boolean
   videoKey?: boolean
   videoId?: boolean
+  workflowStatus?: boolean
+  errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductVideoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productsHash" | "videoKey" | "videoId" | "createdAt" | "updatedAt", ExtArgs["result"]["productVideo"]>
+export type ProductVideoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productsHash" | "videoKey" | "videoId" | "workflowStatus" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["productVideo"]>
 export type ProductVideoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | Prisma.ProductVideo$productsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductVideoCountOutputTypeDefaultArgs<ExtArgs>
@@ -547,6 +615,8 @@ export type $ProductVideoPayload<ExtArgs extends runtime.Types.Extensions.Intern
     productsHash: string
     videoKey: string | null
     videoId: string | null
+    workflowStatus: $Enums.ProductVideoWorkflowStatus
+    errorMessage: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["productVideo"]>
@@ -977,6 +1047,8 @@ export interface ProductVideoFieldRefs {
   readonly productsHash: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly videoKey: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly videoId: Prisma.FieldRef<"ProductVideo", 'String'>
+  readonly workflowStatus: Prisma.FieldRef<"ProductVideo", 'ProductVideoWorkflowStatus'>
+  readonly errorMessage: Prisma.FieldRef<"ProductVideo", 'String'>
   readonly createdAt: Prisma.FieldRef<"ProductVideo", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ProductVideo", 'DateTime'>
 }

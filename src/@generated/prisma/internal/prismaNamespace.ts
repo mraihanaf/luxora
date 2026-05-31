@@ -612,6 +612,8 @@ export const ProductVideoScalarFieldEnum = {
   productsHash: 'productsHash',
   videoKey: 'videoKey',
   videoId: 'videoId',
+  workflowStatus: 'workflowStatus',
+  errorMessage: 'errorMessage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -702,6 +704,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProductVideoWorkflowStatus'
+ */
+export type EnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductVideoWorkflowStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ProductVideoWorkflowStatus[]'
+ */
+export type ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductVideoWorkflowStatus[]'>
     
 
 

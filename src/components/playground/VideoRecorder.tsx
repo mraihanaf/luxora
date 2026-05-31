@@ -86,11 +86,22 @@ export function VideoRecorder({
             <span>Video ID: {video.videoId ?? "Pending"}</span>
           </div>
           {video.videoUrl ? (
-            <video
-              src={video.videoUrl}
-              controls
-              className="mt-4 w-full rounded-2xl border border-[color:var(--glass-border)]"
-            />
+            <div className="mx-auto mt-4 w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px]">
+              <div className="overflow-hidden rounded-2xl border border-[color:var(--glass-border)] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+                <video
+                  src={video.videoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="aspect-[9/16] w-full object-cover"
+                />
+              </div>
+              <div className="mt-3 text-center font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
+                Vertical preview · autoplay enabled
+              </div>
+            </div>
           ) : (
             <div className="mt-4 rounded-2xl border border-dashed border-[color:var(--glass-border)] p-8 text-center text-[14px] text-[color:var(--text-secondary)]">
               Render in progress. This panel refreshes automatically when the workflow completes.

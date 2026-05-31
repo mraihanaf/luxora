@@ -1,4 +1,10 @@
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 const getBucket = () => {
   const bucket = process.env.STORAGE_BUCKET
@@ -114,5 +120,18 @@ export const s3 = {
     }
     const arrayBuffer = await res.arrayBuffer()
     return new Uint8Array(arrayBuffer)
+  },
+
+  getSignedUrl: async (params: {
+    key: string
+    expiresIn?: number
+  }) => {
+    const client = getClient()
+    const bucket = getBucket()
+    const expiresIn = params.expiresIn ?? 3600
+
+    const command = new GetObjectCommand({ Bucket: bucket, Key: params.key })
+    const url = await getSignedUrl(client, command, { expiresIn })
+    return url
   },
 }

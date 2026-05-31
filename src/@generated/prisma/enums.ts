@@ -16,3 +16,13 @@ export const ProductType = {
 } as const
 
 export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
+export const ProductVideoWorkflowStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ProductVideoWorkflowStatus = (typeof ProductVideoWorkflowStatus)[keyof typeof ProductVideoWorkflowStatus]

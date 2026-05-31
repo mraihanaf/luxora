@@ -4,27 +4,12 @@ import { createHash } from "crypto"
 import prisma from "@/lib/prisma"
 import { os, authedMiddleware } from "./base"
 import { tasks } from "@trigger.dev/sdk/v3"
-import { createAdminClient } from "@/lib/supabase/admin"
+import { s3 } from "@/lib/s3"
 
 const productTypeSchema = z.enum(["TOP", "BOTTOM", "HEADWEAR"])
-const SIGNED_URL_TTL_SECONDS = 60 * 60
-
-const getBucket = () => {
-  const bucket = process.env.STORAGE_BUCKET
-  if (!bucket) {
-    throw new ORPCError("INTERNAL_SERVER_ERROR", { message: "STORAGE_BUCKET is not set" })
-  }
-  return bucket
-}
 
 const signRequiredObjectKey = async (key: string) => {
-  const admin = createAdminClient()
-  const bucket = getBucket()
-  const { data, error } = await admin.storage.from(bucket).createSignedUrl(key, SIGNED_URL_TTL_SECONDS)
-  if (error || !data?.signedUrl) {
-    throw new ORPCError("INTERNAL_SERVER_ERROR", { message: error?.message ?? "Failed to sign url" })
-  }
-  return data.signedUrl
+  return s3.getSignedUrl({ key, expiresIn: 3600 })
 }
 
 const signOptionalObjectKey = async (key: string | null | undefined) => {
@@ -187,13 +172,13 @@ const generateProductVideo = os
       return toProductVideo(existing)
     }
 
-    let created
+    let created: SelectedProductVideo
     try {
       created = await db.productVideo.create({
         data: {
           productsHash,
           products: {
-            connect: ids.map((id) => ({ id })),
+            connect: ids.map((id: string) => ({ id })),
           },
         },
         select: {

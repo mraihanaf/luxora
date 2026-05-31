@@ -154,6 +154,23 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumProductVideoWorkflowStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductVideoWorkflowStatus | Prisma.EnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel> | $Enums.ProductVideoWorkflowStatus
+}
+
+export type EnumProductVideoWorkflowStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductVideoWorkflowStatus | Prisma.EnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductVideoWorkflowStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductVideoWorkflowStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -305,6 +322,23 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+}
+
+export type NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductVideoWorkflowStatus | Prisma.EnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel> | $Enums.ProductVideoWorkflowStatus
+}
+
+export type NestedEnumProductVideoWorkflowStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductVideoWorkflowStatus | Prisma.EnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductVideoWorkflowStatus[] | Prisma.ListEnumProductVideoWorkflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductVideoWorkflowStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductVideoWorkflowStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProductVideoWorkflowStatusFilter<$PrismaModel>
 }
 
 

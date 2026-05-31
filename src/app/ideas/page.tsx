@@ -32,36 +32,38 @@ type IdeaItem = Omit<GalleryVideo, "videoUrl"> & {
 
 function IdeaCard({
   item,
-  variant,
 }: {
   item: IdeaItem
-  variant: "wide" | "tall" | "small"
 }) {
   return (
-    <article className="glass-card overflow-hidden rounded-xl">
-      <div className="relative bg-black">
-        <div
-          className={
-            variant === "tall"
-              ? "aspect-[4/5]"
-              : variant === "wide"
-                ? "aspect-[16/9]"
-                : "aspect-[16/10]"
-          }
-        />
+    <article className="glass-card mb-6 inline-block w-full overflow-hidden rounded-[28px] border border-white/10 bg-[color:var(--surface-container-lowest)] align-top">
+      <div className="relative aspect-[9/16] overflow-hidden bg-black">
         <video
           src={item.videoUrl}
-          controls
+          autoPlay
+          loop
+          muted
+          playsInline
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="rounded-full border border-white/20 bg-black/30 px-3 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-white/90 backdrop-blur-sm">
+              {item.products.length} Piece{item.products.length === 1 ? "" : "s"}
+            </div>
+            <div className="rounded-full border border-white/20 bg-black/30 px-3 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-white/90 backdrop-blur-sm">
+              9:16
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="font-[family-name:var(--font-display)] text-[22px] leading-[1.1] text-[color:var(--text-primary)]">
+            <div className="font-[family-name:var(--font-display)] text-[24px] leading-[1.05] text-[color:var(--text-primary)]">
               {item.title}
             </div>
             <div className="mt-2 text-[14px] leading-[1.7] text-[color:var(--text-secondary)]">
@@ -107,14 +109,14 @@ export default function IdeasPage() {
   const items = ideasQuery.data ? getIdeaItems(ideasQuery.data) : [];
 
   return (
-    <div className="mx-auto w-full max-w-[1440px] px-4 pb-24 md:px-16">
+    <div className="mx-auto w-full max-w-[1520px] px-4 pb-24 md:px-10 xl:px-14">
       <header className="mb-12">
         <h1 className="font-[family-name:var(--font-display)] text-[56px] leading-[1.05] tracking-[-0.02em] text-[color:var(--text-primary)]">
-          Ideas — Video Gallery
+          Ideas — Motion Board
         </h1>
         <p className="mt-4 max-w-3xl text-[16px] leading-[1.8] text-[color:var(--text-secondary)]">
-          Completed Trigger-generated product videos from the Luxora workflow, presented as a
-          browsable gallery of rendered outfit concepts.
+          Completed Luxora lookbook videos in a Pinterest-style board, optimized for vertical
+          browsing and autoplay preview.
         </p>
       </header>
 
@@ -141,17 +143,12 @@ export default function IdeasPage() {
           </div>
         </div>
       ) : (
-        <section className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          {items.map((item, index) => (
-            <div
+        <section className="columns-1 gap-6 sm:columns-2 xl:columns-3 2xl:columns-4">
+          {items.map((item) => (
+            <IdeaCard
               key={item.id}
-              className={index === 0 ? "lg:col-span-8" : index === 1 ? "lg:col-span-4" : "lg:col-span-4"}
-            >
-              <IdeaCard
-                item={item}
-                variant={index === 0 ? "wide" : index === 1 ? "tall" : "small"}
-              />
-            </div>
+              item={item}
+            />
           ))}
         </section>
       )}

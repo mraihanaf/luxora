@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { s3 } from "@/lib/s3"
-import { createAdminClient } from "@/lib/supabase/admin"
 
 const getExtension = (filename: string) => {
   const parts = filename.split(".")
@@ -65,12 +64,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "STORAGE_BUCKET is not set" }, { status: 500 })
   }
 
-  const admin = createAdminClient()
-  const { data, error } = await admin.storage.from(bucket).createSignedUrl(key, 60 * 60)
-
-  if (error || !data?.signedUrl) {
-    return NextResponse.json({ error: error?.message ?? "Failed to sign url" }, { status: 500 })
-  }
-
-  return NextResponse.json({ signedUrl: data.signedUrl, key })
+  const signedUrl = await s3.getSignedUrl({ key, expiresIn: 3600 })
+  return NextResponse.json({ signedUrl, key })
 }

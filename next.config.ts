@@ -18,6 +18,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/api/ide/v1/text_to_image",
       },
+      {
+        protocol: "https",
+        hostname: "gpwaopsfulhiyqgmjczu.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/sign/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gpwaopsfulhiyqgmjczu.storage.supabase.co",
+        port: "",
+        pathname: "/storage/v1/s3/**",
+      },
     ],
   },
 };

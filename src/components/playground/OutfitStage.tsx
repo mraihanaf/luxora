@@ -10,21 +10,11 @@ export function OutfitStage({ picks }: { picks: StorefrontProduct[] }) {
         .join(", ")}, minimalist luxury, soft cinematic lighting, subtle metallic gold accents, neutral background, ultra realistic`
     : "high-fashion editorial studio photograph of a model silhouette, minimalist luxury, soft cinematic lighting, subtle metallic gold accents, neutral background, ultra realistic";
 
-  const preview = `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
-    prompt,
-  )}&image_size=landscape_4_3`;
+
 
   return (
     <div className="glass-card relative aspect-[4/3] overflow-hidden rounded-xl">
       <div className="absolute inset-0 bg-[color:var(--surface-container-lowest)]" />
-      <Image
-        src={preview}
-        alt={picks.length ? "Outfit preview" : "Studio preview"}
-        fill
-        sizes="(min-width: 1024px) 900px, 100vw"
-        className="object-cover opacity-85 mix-blend-multiply transition-opacity duration-700"
-        priority
-      />
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.03)_0%,transparent_55%)]" />
       </div>
