@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { getSafeRedirectPath } from '@/lib/auth/redirect'
+import { buildSiteUrl } from '@/lib/auth/site-url'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -48,7 +49,9 @@ export function SignUpForm({ className, next, ...props }: SignUpFormProps) {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(redirectTo)}`,
+          emailRedirectTo: buildSiteUrl(
+            `/auth/confirm?next=${encodeURIComponent(redirectTo)}`
+          ),
         },
       })
       if (error) throw error

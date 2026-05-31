@@ -5,7 +5,8 @@ import prisma from "@/lib/prisma"
 import { pixverse } from "@/lib/pixverse"
 import { s3 } from "@/lib/s3"
 
-const lookbookPrompt = `A fashion lookbook style video. They poses in a minimalist studio with a solid light green background. The camera begins with a medium shot of her raising her hand gracefully, then cuts to dynamic close-up macro shots highlighting the texture of the fabric. and finishes with a full-body wide shot of her standing casually with her hands in her pockets. Professional, bright studio lighting with soft shadows`
+const scenePrompt =
+  "Create a fashion lookbook video in a minimalist studio with a solid light green background. Begin with a medium shot of the model raising her hand gracefully, cut to close-up macro shots highlighting fabric texture, and finish with a full-body wide shot of her standing casually with her hands in her pockets. Use bright professional studio lighting with soft shadows."
 const AVATAR_IMAGE_URL =
   "https://media.pixverse.ai/pixverse%2Ft2i%2Fori%2Fc723da5a-0f66-4dc3-a5d0-0134daf57769.png"
 
@@ -67,6 +68,67 @@ const signRequiredObjectKey = async (key: string) => {
 }
 
 type WorkflowStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
+
+type ProductForPrompt = {
+  type: string
+  name: string
+  description: string | null
+}
+
+const cleanPromptText = (value: string | null | undefined) => {
+  if (!value) return null
+  const cleaned = value.replace(/\s+/g, " ").trim()
+  if (!cleaned) return null
+  return cleaned.replace(/[.]+$/, "")
+}
+
+const describeGarment = (product: ProductForPrompt) => {
+  const name = cleanPromptText(product.name) ?? product.type.toLowerCase()
+  const description = cleanPromptText(product.description)
+  if (!description) {
+    return name
+  }
+
+  return `${name}, ${description}`
+}
+
+const buildGarmentInstructions = (products: ProductForPrompt[]) => {
+  const top = products.find((product) => product.type === "TOP")
+  const bottom = products.find((product) => product.type === "BOTTOM")
+  const headwear = products.find((product) => product.type === "HEADWEAR")
+  const instructions: string[] = [
+    "Dress @model in the exact garments shown in @outfit and keep the outfit faithful to the selected pieces.",
+  ]
+
+  if (top) {
+    instructions.push(
+      `The selected top is ${describeGarment(top)}. Replace the avatar's original upper-body garment with this exact top. Do not keep any conflicting cardigan, jacket, or default upper-body layer from the avatar. Preserve the selected top's garment category, neckline, sleeve shape, silhouette, and layering intent.`
+    )
+  }
+
+  if (bottom) {
+    instructions.push(
+      `The selected bottom is ${describeGarment(bottom)}. Match the lower-body silhouette and styling of this bottom faithfully.`
+    )
+  }
+
+  if (headwear) {
+    instructions.push(
+      `The selected headwear is ${describeGarment(headwear)}. Include it as part of the final look when visible.`
+    )
+  }
+
+  instructions.push(
+    "Keep the styling realistic, editorial, and fashion-focused while ensuring the selected garments remain the dominant outfit identity."
+  )
+
+  return instructions.join(" ")
+}
+
+const buildFusionPrompt = (products: ProductForPrompt[]) => {
+  const garmentPrompt = buildGarmentInstructions(products)
+  return `${garmentPrompt} ${scenePrompt}`
+}
 
 const updateWorkflowProgress = async (params: {
   productVideoId: string
@@ -173,7 +235,15 @@ export const generateProductVideo = schemaTask({
       })
       lastProgressLabel = "Starting video render"
 
-      const prompt = `@model wearing @outfit ${lookbookPrompt}`
+      const prompt = buildFusionPrompt(sortedProducts)
+      console.log("[generate-product-video] prompt:", {
+        products: sortedProducts.map((product) => ({
+          type: product.type,
+          name: product.name,
+          description: product.description,
+        })),
+        prompt,
+      })
 
       const fusion = await pixverse.generateFusionVideo({
         imageReferences: [
