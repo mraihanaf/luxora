@@ -6,7 +6,7 @@ export function getSiteUrl() {
     return trimTrailingSlash(configuredUrl)
   }
 
-  return "http://localhost:3000"
+  return "https://luxora-bne8.vercel.app"
 }
 
 export function buildSiteUrl(path: string) {
